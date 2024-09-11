@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom, map } from 'rxjs';
+import { map, Observable, throwError } from 'rxjs';
 import { GetTokenResponse, RefreshAccessTokenResponse } from './AuthResponses';
 
 @Injectable({
@@ -26,7 +26,7 @@ export class AuthService {
     return this.accessToken;
   }
 
-  refreshAccessToken() {
+  refreshAccessToken(): Observable<string> {
     const url = new URL('https://www.googleapis.com/oauth2/v4/token');
     const body = {
       client_id: this.clientId,
@@ -34,11 +34,12 @@ export class AuthService {
       refresh_token: this.refreshToken,
       grant_type: 'refresh_token',
     };
+
     return this.http.post<RefreshAccessTokenResponse>(url.href, body).pipe(
       map((res) => {
-        this.accessToken = res['access_token'];
+        this.accessToken = res.access_token;
         localStorage.setItem('access_token', this.accessToken);
-        return res['access_token'];
+        return res.access_token;
       })
     );
   }
@@ -56,9 +57,9 @@ export class AuthService {
     return url;
   }
 
-  async exchangeCodeWithTokens(state: string, code: string) {
+  exchangeCodeWithTokens(state: string, code: string) {
     if (state !== this.state) {
-      throw new Error('Invalid state');
+      return throwError(() => new Error('Invalid state'));
     }
 
     const url = 'https://oauth2.googleapis.com/token';
@@ -69,16 +70,20 @@ export class AuthService {
     params.set('redirect_uri', this.redirectUri);
     params.set('grant_type', 'authorization_code');
 
-    const response = await firstValueFrom(
-      this.http.post<GetTokenResponse>(url, params.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      })
-    );
+    const options = {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    };
 
-    this.accessToken = response.access_token;
-    this.refreshToken = response.refresh_token;
+    return this.http
+      .post<GetTokenResponse>(url, params.toString(), options)
+      .pipe(
+        map((res) => {
+          this.accessToken = res.access_token;
+          this.refreshToken = res.refresh_token;
 
-    localStorage.setItem('access_token', this.accessToken);
-    localStorage.setItem('refresh_token', this.refreshToken);
+          localStorage.setItem('access_token', this.accessToken);
+          localStorage.setItem('refresh_token', this.refreshToken);
+        })
+      );
   }
 }

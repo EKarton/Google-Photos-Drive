@@ -10,7 +10,7 @@ import {
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-home-page',
   standalone: true,
   imports: [
     NbLayoutModule,
@@ -19,11 +19,11 @@ import { AuthService } from '../../core/auth/auth.service';
     NbIconModule,
     NbCardModule,
   ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+  templateUrl: './home-page.component.html',
+  styleUrl: './home-page.component.scss',
   providers: [NbSidebarService],
 })
-export class HomeComponent {
+export class HomePageComponent {
   constructor(private authService: AuthService) {}
 
   handleLoginClick() {

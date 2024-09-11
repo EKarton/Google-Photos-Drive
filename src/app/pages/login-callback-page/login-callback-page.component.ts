@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AuthService } from '../../core/auth/auth.service';
 import {
   NbButtonModule,
   NbCardModule,
@@ -11,7 +11,7 @@ import {
 import { Base64 } from 'js-base64';
 
 @Component({
-  selector: 'app-login-callback',
+  selector: 'app-login-callback-page',
   standalone: true,
   imports: [
     NbLayoutModule,
@@ -20,10 +20,10 @@ import { Base64 } from 'js-base64';
     NbButtonModule,
     NbIconModule,
   ],
-  templateUrl: './login-callback.component.html',
-  styleUrl: './login-callback.component.scss',
+  templateUrl: './login-callback-page.component.html',
+  styleUrl: './login-callback-page.component.scss',
 })
-export class LoginCallbackComponent implements OnInit {
+export class LoginCallbackPageComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -38,20 +38,22 @@ export class LoginCallbackComponent implements OnInit {
     const state = queryParams.get('state')!;
     const code = queryParams.get('code')!;
 
-    try {
-      this.isLoading = true;
-      await this.authService.exchangeCodeWithTokens(state, code);
-      setTimeout(
-        () => this.router.navigateByUrl(`/content/${Base64.encode('Home')}`),
-        1500
-      );
-      this.isSuccessful = true;
-    } catch (error) {
-      this.isSuccessful = false;
-      console.error('Error in getting auth token', error);
-    } finally {
-      this.isLoading = false;
-    }
+    this.isLoading = true;
+    this.authService.exchangeCodeWithTokens(state, code).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.isSuccessful = true;
+        setTimeout(
+          () => this.router.navigateByUrl(`/content/${Base64.encode('Home')}`),
+          1500
+        );
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.isSuccessful = false;
+        console.error('Error in getting auth token', err);
+      },
+    });
   }
 
   handleHomePageButtonClick() {

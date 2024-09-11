@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginCallbackComponent } from './login-callback.component';
+import { LoginCallbackPageComponent } from './login-callback-page.component';
 
 describe('LoginCallbackComponent', () => {
-  let component: LoginCallbackComponent;
-  let fixture: ComponentFixture<LoginCallbackComponent>;
+  let component: LoginCallbackPageComponent;
+  let fixture: ComponentFixture<LoginCallbackPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginCallbackComponent]
+      imports: [LoginCallbackPageComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LoginCallbackComponent);
+    fixture = TestBed.createComponent(LoginCallbackPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

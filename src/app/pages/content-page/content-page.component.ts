@@ -24,7 +24,7 @@ import { MediaItemsRequestService } from '../../core/media-items/MediaItemsReque
 import { MediaItem } from '../../core/media-items/MediaItems';
 
 @Component({
-  selector: 'app-albums',
+  selector: 'app-content-page',
   standalone: true,
   imports: [
     NbLayoutModule,
@@ -37,8 +37,8 @@ import { MediaItem } from '../../core/media-items/MediaItems';
     NbCardModule,
     ComponentsModule,
   ],
-  templateUrl: './content.component.html',
-  styleUrl: './content.component.scss',
+  templateUrl: './content-page.component.html',
+  styleUrl: './content-page.component.scss',
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -51,7 +51,7 @@ import { MediaItem } from '../../core/media-items/MediaItems';
     TreeRepositoryService,
   ],
 })
-export class ContentComponent implements OnInit {
+export class ContentPageComponent implements OnInit {
   options: string[] = ['Option 1', 'Option 2', 'Option 3'];
   filteredOptions$: Observable<string[]> = of(this.options);
   inputFormControl: FormControl = new FormControl();
