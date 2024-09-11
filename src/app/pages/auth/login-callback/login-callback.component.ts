@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import {
   NbButtonModule,
   NbCardModule,
@@ -8,7 +8,6 @@ import {
   NbLayoutModule,
   NbSpinnerModule,
 } from '@nebular/theme';
-import { timeout } from 'rxjs';
 import { Base64 } from 'js-base64';
 
 @Component({
@@ -31,8 +30,8 @@ export class LoginCallbackComponent implements OnInit {
     private authService: AuthService
   ) {}
 
-  isLoading: boolean = false;
-  isSuccessful: boolean = false;
+  isLoading = false;
+  isSuccessful = false;
 
   async ngOnInit() {
     const queryParams = this.route.snapshot.queryParamMap;
@@ -49,6 +48,7 @@ export class LoginCallbackComponent implements OnInit {
       this.isSuccessful = true;
     } catch (error) {
       this.isSuccessful = false;
+      console.error('Error in getting auth token', error);
     } finally {
       this.isLoading = false;
     }

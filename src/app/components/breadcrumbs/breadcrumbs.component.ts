@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Breadcrumb } from './breadcrumb';
 
 @Component({
-  selector: 'breadcrumbs',
+  selector: 'app-breadcrumbs',
   standalone: true,
   imports: [],
   templateUrl: './breadcrumbs.component.html',

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
   combineLatest,
+  defer,
   distinct,
-  EMPTY,
-  expand,
-  firstValueFrom,
   from,
   map,
   mergeMap,
@@ -12,33 +10,33 @@ import {
   of,
   reduce,
   shareReplay,
-  zip,
 } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { TreeNode } from './TreeNode';
 import { AlbumsRepositoryService } from '../albums/AlbumsRepository.service';
 import { Album } from '../albums/Albums';
+import { MediaItemsRequestService } from '../media-items/MediaItemsRequest.service';
 
 @Injectable()
 export class TreeRepositoryService {
   private rootNode: Observable<TreeNode> | undefined;
 
-  constructor(private albumsRepositoryService: AlbumsRepositoryService) {}
+  constructor(
+    private albumsRepositoryService: AlbumsRepositoryService,
+    private mediaItemsRequestService: MediaItemsRequestService
+  ) {}
 
   getTreeNodeFromTitlePrefix(
-    titlePrefix: string = ''
+    titlePrefix = ''
   ): Observable<TreeNode | null> {
     if (!this.rootNode) {
       this.rootNode = this.createTree().pipe(shareReplay(1));
     }
 
+    const titlesToSearchFor = titlePrefix.split('/').splice(1);
+
     return this.rootNode.pipe(
       map((node) => {
-        if (!titlePrefix) {
-          return node;
-        }
-
-        const titlesToSearchFor = titlePrefix.split('/');
         let curNode = node;
         for (const title of titlesToSearchFor) {
           const foundChildNode = curNode.childNodes.find(
@@ -74,19 +72,24 @@ export class TreeRepositoryService {
       totalMediaItemsCount: 0,
       childNodes: [],
       numPhotos: 0,
-      getPhotos: () => EMPTY,
+      photos: defer(() => this.mediaItemsRequestService.fetchMediaItems()),
     };
 
     return mergedAlbums.pipe(
       reduce((rootNode: TreeNode, album: Album) => {
-        const newTitle = `Home/${album.title}`;
-        const titles = newTitle.split('/');
+        const titles = album.title.split('/');
+
+        console.log('Root node');
+        console.log(rootNode);
 
         let curNode = rootNode;
         for (const title of titles) {
           const foundChildNode = curNode.childNodes.find(
             (node) => node.title === title
           );
+
+          console.log(`FoundChildNode for ${title}:`);
+          console.log(foundChildNode);
 
           if (!foundChildNode) {
             const newNode = {
@@ -96,7 +99,7 @@ export class TreeRepositoryService {
               totalMediaItemsCount: album.mediaItemsCount,
               childNodes: [],
               numPhotos: 0,
-              getPhotos: () => EMPTY,
+              photos: of([]),
             };
             curNode.childNodes.push(newNode);
             curNode = newNode;
@@ -118,6 +121,9 @@ export class TreeRepositoryService {
 
         curNode.numPhotos = album.mediaItemsCount;
         curNode.coverPhotoBaseUrl = [album.coverPhotoBaseUrl];
+        curNode.photos = defer(() =>
+          this.mediaItemsRequestService.fetchMediaItems(album.id)
+        );
 
         return rootNode;
       }, rootTreeNode)

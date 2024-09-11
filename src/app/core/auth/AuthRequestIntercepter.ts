@@ -22,9 +22,9 @@ export class AuthRequestIntercepter implements HttpInterceptor {
    * @returns
    */
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<object>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<object>> {
     return next.handle(req).pipe(
       catchError((res: HttpErrorResponse) => {
         if (res.status === 401) {

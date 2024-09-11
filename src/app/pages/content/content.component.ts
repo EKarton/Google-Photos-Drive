@@ -9,19 +9,19 @@ import {
   NbSearchModule,
 } from '@nebular/theme';
 import { Base64 } from 'js-base64';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { AlbumsRepositoryService } from './albums/AlbumsRepository.service';
-import { Album } from './albums/Albums';
+import { EMPTY, Observable, of } from 'rxjs';
+import { map, mergeMap, startWith } from 'rxjs/operators';
+import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthRequestIntercepter } from '../auth/AuthRequestIntercepter';
-import { AlbumsRequestService } from './albums/AlbumsRequest.service';
-import { TreeRepositoryService } from './tree/TreeRepository.service';
-import { TreeNode } from './tree/TreeNode';
-import { AlbumsModule } from './albums/albums.module';
+import { AuthRequestIntercepter } from '../../core/auth/AuthRequestIntercepter';
+import { AlbumsRequestService } from '../../core/albums/AlbumsRequest.service';
+import { TreeRepositoryService } from '../../core/tree/TreeRepository.service';
+import { TreeNode } from '../../core/tree/TreeNode';
 import { ComponentsModule } from '../../components/components.module';
 import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
+import { MediaItemsRequestService } from '../../core/media-items/MediaItemsRequest.service';
+import { MediaItem } from '../../core/media-items/MediaItems';
 
 @Component({
   selector: 'app-albums',
@@ -35,7 +35,6 @@ import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
     NbInputModule,
     AsyncPipe,
     NbCardModule,
-    AlbumsModule,
     ComponentsModule,
   ],
   templateUrl: './content.component.html',
@@ -48,6 +47,7 @@ import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
     },
     AlbumsRequestService,
     AlbumsRepositoryService,
+    MediaItemsRequestService,
     TreeRepositoryService,
   ],
 })
@@ -57,6 +57,7 @@ export class ContentComponent implements OnInit {
   inputFormControl: FormControl = new FormControl();
 
   treeNode: TreeNode | null = null;
+  photos: MediaItem[] | null = null;
   path!: string;
   pathBreadcrumbs!: Breadcrumb[];
 
@@ -69,19 +70,36 @@ export class ContentComponent implements OnInit {
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.treeNode = null;
+      this.photos = null;
       this.path = Base64.decode(params.get('pathId')!);
       this.pathBreadcrumbs = this.getBreadcrumbs(this.path);
 
       this.treeRepositoryService
         .getTreeNodeFromTitlePrefix(this.path)
+        .pipe(
+          mergeMap((treeNode) => {
+            if (!treeNode) {
+              return EMPTY;
+            }
+
+            return treeNode.photos.pipe(
+              map((photos) => {
+                return { treeNode, photos };
+              })
+            );
+          })
+        )
         .subscribe({
-          next: (treeNode) => {
+          next: ({ treeNode, photos }) => {
             this.treeNode = treeNode;
+            this.photos = photos;
           },
           error: (err: HttpErrorResponse) => {
             if (err.status === 401 || err.status === 400) {
               this.router.navigateByUrl('/auth/login');
             }
+
+            console.error('ERROR' + err);
           },
         });
     });
@@ -100,7 +118,7 @@ export class ContentComponent implements OnInit {
   }
 
   getBreadcrumbs(path: string): Breadcrumb[] {
-    const pathParts = this.path.split('/');
+    const pathParts = path.split('/');
     const breadcrumbs: Breadcrumb[] = [];
 
     let prevPath = '';
@@ -141,5 +159,9 @@ export class ContentComponent implements OnInit {
       .catch((err) =>
         console.error(`Failed to navigate to ${newPath}: ${err}`)
       );
+  }
+
+  handlePhotoClick(photo: MediaItem) {
+    window.open(photo.productUrl, '_blank', 'noopener,noreferrer');
   }
 }

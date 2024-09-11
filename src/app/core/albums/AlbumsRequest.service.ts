@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { EMPTY, expand, Observable, reduce, take } from 'rxjs';
 import {

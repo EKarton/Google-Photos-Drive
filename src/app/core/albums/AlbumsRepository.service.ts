@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { Album } from './Albums';
 import { AlbumsRequestService } from './AlbumsRequest.service';
 

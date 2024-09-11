@@ -1,14 +1,14 @@
-export type AlbumsPagedResponse = {
+export interface AlbumsPagedResponse {
   albums: Album[] | undefined;
   nextPageToken: string | undefined;
-};
+}
 
-export type SharedAlbumsPagedResponse = {
+export interface SharedAlbumsPagedResponse {
   sharedAlbums: Album[] | undefined;
   nextPageToken: string | undefined;
-};
+}
 
-export type Album = {
+export interface Album {
   id: string;
   title: string;
   productUrl: string;
@@ -16,4 +16,4 @@ export type Album = {
   coverPhotoMediaItemId: string;
   isWriteable: string;
   mediaItemsCount: number;
-};
+}

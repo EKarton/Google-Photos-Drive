@@ -1,11 +1,12 @@
 import { Observable } from 'rxjs';
+import { MediaItem } from '../media-items/MediaItems';
 
-export type TreeNode = {
+export interface TreeNode {
   id: string;
   title: string;
   coverPhotoBaseUrl: string[];
   totalMediaItemsCount: number;
   childNodes: TreeNode[];
   numPhotos: number;
-  getPhotos: () => Observable<any>;
-};
+  photos: Observable<MediaItem[]>;
+}

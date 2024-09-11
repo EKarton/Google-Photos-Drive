@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, map } from 'rxjs';
+import { GetTokenResponse, RefreshAccessTokenResponse } from './AuthResponses';
 
 @Injectable({
   providedIn: 'root',
@@ -33,27 +34,13 @@ export class AuthService {
       refresh_token: this.refreshToken,
       grant_type: 'refresh_token',
     };
-    return this.http.post(url.href, body).pipe(
-      map((response: any) => {
-        this.accessToken = response['access_token'];
+    return this.http.post<RefreshAccessTokenResponse>(url.href, body).pipe(
+      map((res) => {
+        this.accessToken = res['access_token'];
         localStorage.setItem('access_token', this.accessToken);
-        return response['access_token'];
+        return res['access_token'];
       })
     );
-  }
-
-  async refreshAccessTokenAsync() {
-    const url = new URL('https://www.googleapis.com/oauth2/v4/token');
-    const body = {
-      client_id: this.clientId,
-      client_secret: this.clientSecret,
-      refresh_token: this.refreshToken,
-      grant_type: 'refresh_token',
-    };
-    const response = await firstValueFrom(this.http.post(url.href, body));
-
-    this.accessToken = (response as any).accessToken;
-    localStorage.setItem('access_token', this.accessToken);
   }
 
   getLoginRedirectUrl(): URL {
@@ -83,13 +70,13 @@ export class AuthService {
     params.set('grant_type', 'authorization_code');
 
     const response = await firstValueFrom(
-      this.http.post(url, params.toString(), {
+      this.http.post<GetTokenResponse>(url, params.toString(), {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
     );
 
-    this.accessToken = (response as any)['access_token'];
-    this.refreshToken = (response as any)['refresh_token'];
+    this.accessToken = response.access_token;
+    this.refreshToken = response.refresh_token;
 
     localStorage.setItem('access_token', this.accessToken);
     localStorage.setItem('refresh_token', this.refreshToken);

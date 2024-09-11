@@ -27,22 +27,38 @@
     </span>
   </nb-layout-header>
   <nb-layout-column>
-    <breadcrumbs
+    <app-breadcrumbs
       class="content-page__breadcrumbs"
       [items]="pathBreadcrumbs"
-    ></breadcrumbs>
+    ></app-breadcrumbs>
     <div>
       @if (treeNode && treeNode.childNodes.length > 0) {
       <div>
         <h5 class="content-page__section-header">Albums</h5>
         <div class="image-cards-list">
           @for (childNode of treeNode.childNodes; track childNode.id) {
-          <album-card
+          <app-album-card
             [albumTitle]="childNode.title"
             [numPhotos]="childNode.numPhotos"
             [numSubAlbums]="childNode.childNodes.length"
             [imgSrc]="childNode.coverPhotoBaseUrl[0]"
             (click)="albumClick(childNode)"
+          />
+          }
+        </div>
+      </div>
+      }
+    </div>
+    <div>
+      @if (photos && photos.length > 0) {
+      <div>
+        <h5 class="content-page__section-header">Photos</h5>
+        <div class="image-cards-list">
+          @for (photo of photos; track photo.id) {
+          <app-photo-card
+            [imgSrc]="photo.baseUrl"
+            [imgName]="photo.filename"
+            (click)="handlePhotoClick(photo)"
           />
           }
         </div>

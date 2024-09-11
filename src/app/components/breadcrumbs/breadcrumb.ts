@@ -1,4 +1,4 @@
-export type Breadcrumb = {
+export interface Breadcrumb {
   label: string;
   onClick: () => void;
-};
+}
