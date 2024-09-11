@@ -1,0 +1,53 @@
+<nb-layout>
+  <nb-layout-header>
+    <span class="logo">
+      <img
+        src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
+        alt="Google logo"
+      />
+      <span>
+        <h5 class="logo__text">Photos Drive</h5>
+      </span>
+    </span>
+    <span>
+      <input
+        [formControl]="inputFormControl"
+        nbInput
+        type="text"
+        placeholder="Enter value"
+        [nbAutocomplete]="auto"
+      />
+      <nb-autocomplete #auto>
+        @for (option of (filteredOptions$ | async); track option) {
+        <nb-option [value]="option">
+          {{ option }}
+        </nb-option>
+        }
+      </nb-autocomplete>
+    </span>
+  </nb-layout-header>
+  <nb-layout-column>
+    <breadcrumbs
+      class="content-page__breadcrumbs"
+      [items]="pathBreadcrumbs"
+    ></breadcrumbs>
+    <div>
+      @if (treeNode && treeNode.childNodes.length > 0) {
+      <div>
+        <h5 class="content-page__section-header">Albums</h5>
+        <div class="image-cards-list">
+          @for (childNode of treeNode.childNodes; track childNode.id) {
+          <album-card
+            [albumTitle]="childNode.title"
+            [numPhotos]="childNode.numPhotos"
+            [numSubAlbums]="childNode.childNodes.length"
+            [imgSrc]="childNode.coverPhotoBaseUrl[0]"
+            (click)="albumClick(childNode)"
+          />
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </nb-layout-column>
+</nb-layout>

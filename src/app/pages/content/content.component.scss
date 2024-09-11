@@ -1,3 +1,14 @@
+.content-page {
+  &__breadcrumbs {
+    padding-bottom: 1rem;
+    display: block;
+  }
+
+  &__section-header {
+    margin-top: 0;
+  }
+}
+
 .logo {
   display: flex;
   justify-content: center;

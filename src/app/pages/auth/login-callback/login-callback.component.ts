@@ -42,7 +42,10 @@ export class LoginCallbackComponent implements OnInit {
     try {
       this.isLoading = true;
       await this.authService.exchangeCodeWithTokens(state, code);
-      setTimeout(() => this.router.navigateByUrl('/content/root'), 1500);
+      setTimeout(
+        () => this.router.navigateByUrl(`/content/${Base64.encode('Home')}`),
+        1500
+      );
       this.isSuccessful = true;
     } catch (error) {
       this.isSuccessful = false;

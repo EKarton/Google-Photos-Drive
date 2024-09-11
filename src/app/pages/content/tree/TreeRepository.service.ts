@@ -69,7 +69,7 @@ export class TreeRepositoryService {
 
     const rootTreeNode = {
       id: uuidv4(),
-      title: '',
+      title: 'Home',
       coverPhotoBaseUrl: [],
       totalMediaItemsCount: 0,
       childNodes: [],
@@ -79,7 +79,8 @@ export class TreeRepositoryService {
 
     return mergedAlbums.pipe(
       reduce((rootNode: TreeNode, album: Album) => {
-        const titles = album.title.split('/');
+        const newTitle = `Home/${album.title}`;
+        const titles = newTitle.split('/');
 
         let curNode = rootNode;
         for (const title of titles) {

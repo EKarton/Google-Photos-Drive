@@ -20,6 +20,8 @@ import { AlbumsRequestService } from './albums/AlbumsRequest.service';
 import { TreeRepositoryService } from './tree/TreeRepository.service';
 import { TreeNode } from './tree/TreeNode';
 import { AlbumsModule } from './albums/albums.module';
+import { ComponentsModule } from '../../components/components.module';
+import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
 
 @Component({
   selector: 'app-albums',
@@ -34,6 +36,7 @@ import { AlbumsModule } from './albums/albums.module';
     AsyncPipe,
     NbCardModule,
     AlbumsModule,
+    ComponentsModule,
   ],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss',
@@ -55,6 +58,7 @@ export class ContentComponent implements OnInit {
 
   treeNode: TreeNode | null = null;
   path!: string;
+  pathBreadcrumbs!: Breadcrumb[];
 
   constructor(
     private treeRepositoryService: TreeRepositoryService,
@@ -65,9 +69,8 @@ export class ContentComponent implements OnInit {
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.treeNode = null;
-
-      const pathParam = params.get('pathId')!;
-      this.path = pathParam === 'root' ? '' : Base64.decode(pathParam);
+      this.path = Base64.decode(params.get('pathId')!);
+      this.pathBreadcrumbs = this.getBreadcrumbs(this.path);
 
       this.treeRepositoryService
         .getTreeNodeFromTitlePrefix(this.path)
@@ -96,11 +99,42 @@ export class ContentComponent implements OnInit {
     );
   }
 
-  albumClick(treeNode: TreeNode) {
-    const newPath = this.path
-      ? `${this.path}/${treeNode.title}`
-      : treeNode.title;
+  getBreadcrumbs(path: string): Breadcrumb[] {
+    const pathParts = this.path.split('/');
+    const breadcrumbs: Breadcrumb[] = [];
 
+    let prevPath = '';
+    for (let i = 0; i < pathParts.length; i++) {
+      const pathPart = pathParts[i];
+      const redirectPath = prevPath ? `${prevPath}/${pathPart}` : pathPart;
+
+      const onClick = () => {
+        this.router
+          .navigate(['/content', Base64.encode(redirectPath)])
+          .then(() =>
+            console.log(`Navigated to ${redirectPath} from breadcrumb`)
+          )
+          .catch((err) =>
+            console.error(
+              `Failed to navigate to ${redirectPath} from breadcrumb: ${err}`
+            )
+          );
+      };
+
+      prevPath = redirectPath;
+      const breadcrumb = {
+        label: pathPart,
+        onClick,
+        isDisabled: i === pathParts.length - 1,
+      };
+      breadcrumbs.push(breadcrumb);
+    }
+
+    return breadcrumbs;
+  }
+
+  albumClick(treeNode: TreeNode) {
+    const newPath = `${this.path}/${treeNode.title}`;
     this.router
       .navigate(['/content', Base64.encode(newPath)])
       .then(() => console.log(`Navigated to ${newPath}`))
