@@ -9,6 +9,7 @@ import {
   NbSpinnerModule,
 } from '@nebular/theme';
 import { timeout } from 'rxjs';
+import { Base64 } from 'js-base64';
 
 @Component({
   selector: 'app-login-callback',
@@ -41,8 +42,7 @@ export class LoginCallbackComponent implements OnInit {
     try {
       this.isLoading = true;
       await this.authService.exchangeCodeWithTokens(state, code);
-
-      setTimeout(() => this.router.navigateByUrl('/content'), 1500);
+      setTimeout(() => this.router.navigateByUrl('/content/root'), 1500);
       this.isSuccessful = true;
     } catch (error) {
       this.isSuccessful = false;

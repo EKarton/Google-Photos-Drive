@@ -28,20 +28,23 @@
   </nb-layout-header>
   <nb-layout-column>
     <div>
+      @if (path) {
+      <h5>Albums under {{ path }}</h5>
+      } @else {
       <h5>Albums</h5>
+      }
+
       <div class="image-cards-list">
-        @if (treeNode) {
-          @for (childNode of treeNode.childNodes; track childNode.id) {
-            <nb-card class="image-card">
-              <nb-card-body>
-                <img
-                  src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
-                  alt="Google logo"
-                />
-              </nb-card-body>
-            </nb-card>
-            }
-        }
+        @if (treeNode) { @for (childNode of treeNode.childNodes; track
+        childNode.id) {
+        <album-card
+          [albumTitle]="childNode.title"
+          [numPhotos]="childNode.numPhotos"
+          [numSubAlbums]="childNode.childNodes.length"
+          [imgSrc]="childNode.coverPhotoBaseUrl[0]"
+          (click)="albumClick(childNode)"
+        />
+        } }
       </div>
     </div>
     <div>

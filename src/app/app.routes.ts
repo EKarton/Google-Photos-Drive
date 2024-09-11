@@ -9,6 +9,6 @@ export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/login/callback', component: LoginCallbackComponent },
-  { path: 'content', component: ContentComponent },
+  { path: 'content/:pathId', component: ContentComponent },
   { path: '**', component: NotFoundComponent },
 ];

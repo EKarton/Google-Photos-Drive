@@ -6,6 +6,6 @@ export type TreeNode = {
   coverPhotoBaseUrl: string[];
   totalMediaItemsCount: number;
   childNodes: TreeNode[];
+  numPhotos: number;
   getPhotos: () => Observable<any>;
 };
-

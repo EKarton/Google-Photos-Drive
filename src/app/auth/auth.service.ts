@@ -6,18 +6,19 @@ import { firstValueFrom, map } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private state: string;
-
   private scopes = ['https://www.googleapis.com/auth/photoslibrary.readonly'];
   private clientId = import.meta.env.NG_APP_GOOGLE_CLIENT_ID;
   private clientSecret = import.meta.env.NG_APP_GOOGLE_CLIENT_SECRET;
   private redirectUri = import.meta.env.NG_APP_GOOGLE_REDIRECT_URL;
 
-  private accessToken: string | undefined;
-  private refreshToken: string | undefined;
+  private state: string;
+  private accessToken: string;
+  private refreshToken: string;
 
   constructor(private http: HttpClient) {
     this.state = '123';
+    this.accessToken = localStorage.getItem('access_token') || '';
+    this.refreshToken = localStorage.getItem('refresh_token') || '';
   }
 
   getAccessToken(): string | undefined {
@@ -35,6 +36,7 @@ export class AuthService {
     return this.http.post(url.href, body).pipe(
       map((response: any) => {
         this.accessToken = response['access_token'];
+        localStorage.setItem('access_token', this.accessToken);
         return response['access_token'];
       })
     );
@@ -51,6 +53,7 @@ export class AuthService {
     const response = await firstValueFrom(this.http.post(url.href, body));
 
     this.accessToken = (response as any).accessToken;
+    localStorage.setItem('access_token', this.accessToken);
   }
 
   getLoginRedirectUrl(): URL {
@@ -87,5 +90,8 @@ export class AuthService {
 
     this.accessToken = (response as any)['access_token'];
     this.refreshToken = (response as any)['refresh_token'];
+
+    localStorage.setItem('access_token', this.accessToken);
+    localStorage.setItem('refresh_token', this.refreshToken);
   }
 }

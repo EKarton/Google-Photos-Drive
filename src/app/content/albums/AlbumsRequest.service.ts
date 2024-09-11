@@ -8,6 +8,9 @@ import {
   SharedAlbumsPagedResponse,
 } from './Albums';
 
+/**
+ * Responsible for making requests to Google Photos that is albums related.
+ */
 @Injectable()
 export class AlbumsRequestService {
   constructor(
@@ -15,7 +18,11 @@ export class AlbumsRequestService {
     private httpClient: HttpClient
   ) {}
 
-  /** Fetches all shared albums owned by the user */
+  /**
+   * Fetches all shared albums.
+   *
+   * @returns an observable of a list of shared albums.
+   */
   fetchSharedAlbums(): Observable<Album[]> {
     return this.fetchSharedAlbumsPage().pipe(
       expand((response: SharedAlbumsPagedResponse) => {
@@ -47,7 +54,11 @@ export class AlbumsRequestService {
     });
   }
 
-  /** Fetches all albums owned by the user */
+  /**
+   * Fetches all albums owned by the user.
+   *
+   * @returns an observable of a list of albums.
+   */
   fetchAlbums(): Observable<Album[]> {
     return this.fetchAlbumsPage().pipe(
       expand((response: AlbumsPagedResponse) => {

@@ -6,8 +6,10 @@
 }
 
 .image-cards-list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 15rem);
+  grid-template-rows: auto;
+  gap: 2.5rem;
 }
 
 .image-card {

@@ -1,0 +1,10 @@
+<div class="album-card">
+  <img class="album-card__image" [src]="imgSrc" />
+  <div class="album-card__details">
+    <div>{{ albumTitle }}</div>
+    <div>
+      {{ numPhotos }} {{ numPhotos === 1 ? "photo" : "photos" }} &middot;
+      {{ numSubAlbums }} {{ numSubAlbums === 1 ? "album" : "albums" }}
+    </div>
+  </div>
+</div>

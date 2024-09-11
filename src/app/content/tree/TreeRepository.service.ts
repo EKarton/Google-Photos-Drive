@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   combineLatest,
+  distinct,
   EMPTY,
   expand,
   firstValueFrom,
@@ -10,6 +11,7 @@ import {
   Observable,
   of,
   reduce,
+  shareReplay,
   zip,
 } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -27,7 +29,7 @@ export class TreeRepositoryService {
     titlePrefix: string = ''
   ): Observable<TreeNode | null> {
     if (!this.rootNode) {
-      this.rootNode = this.createTree();
+      this.rootNode = this.createTree().pipe(shareReplay(1));
     }
 
     return this.rootNode.pipe(
@@ -61,7 +63,8 @@ export class TreeRepositoryService {
 
     const mergedAlbums = combineLatest([flow1, flow2]).pipe(
       map(([array1, array2]) => [...array1, ...array2]),
-      mergeMap((albums) => from(albums))
+      mergeMap((albums) => from(albums)),
+      distinct((album) => album.id)
     );
 
     const rootTreeNode = {
@@ -70,41 +73,64 @@ export class TreeRepositoryService {
       coverPhotoBaseUrl: [],
       totalMediaItemsCount: 0,
       childNodes: [],
+      numPhotos: 0,
       getPhotos: () => EMPTY,
     };
 
     return mergedAlbums.pipe(
       reduce((rootNode: TreeNode, album: Album) => {
         const titles = album.title.split('/');
-        console.log(titles);
 
         let curNode = rootNode;
         for (const title of titles) {
-          console.log('Processing ' + title);
           const foundChildNode = curNode.childNodes.find(
             (node) => node.title === title
           );
-
-          console.log('foundChildNode: ' + foundChildNode);
 
           if (!foundChildNode) {
             const newNode = {
               id: uuidv4(),
               title: title,
-              coverPhotoBaseUrl: [],
-              totalMediaItemsCount: 0,
+              coverPhotoBaseUrl: [album.coverPhotoBaseUrl],
+              totalMediaItemsCount: album.mediaItemsCount,
               childNodes: [],
+              numPhotos: 0,
               getPhotos: () => EMPTY,
             };
             curNode.childNodes.push(newNode);
             curNode = newNode;
           } else {
+            foundChildNode.totalMediaItemsCount += album.mediaItemsCount;
+            foundChildNode.coverPhotoBaseUrl.push(album.coverPhotoBaseUrl);
+            foundChildNode.coverPhotoBaseUrl = this.shuffleArray(
+              foundChildNode.coverPhotoBaseUrl
+            );
+
+            if (foundChildNode.coverPhotoBaseUrl.length > 4) {
+              foundChildNode.coverPhotoBaseUrl =
+                foundChildNode.coverPhotoBaseUrl.slice(0, 4);
+            }
+
             curNode = foundChildNode;
           }
         }
 
+        curNode.numPhotos = album.mediaItemsCount;
+        curNode.coverPhotoBaseUrl = [album.coverPhotoBaseUrl];
+
         return rootNode;
       }, rootTreeNode)
     );
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const length = array.length;
+
+    for (let i = length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
+
+    return array;
   }
 }
