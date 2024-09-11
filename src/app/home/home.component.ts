@@ -1,24 +1,32 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import {
   NbButtonModule,
+  NbCardModule,
+  NbIconModule,
   NbLayoutModule,
   NbSidebarModule,
   NbSidebarService,
 } from '@nebular/theme';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NbLayoutModule, NbSidebarModule, NbButtonModule],
+  imports: [
+    NbLayoutModule,
+    NbSidebarModule,
+    NbButtonModule,
+    NbIconModule,
+    NbCardModule,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   providers: [NbSidebarService],
 })
 export class HomeComponent {
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   handleLoginClick() {
-    this.router.navigateByUrl('/auth/login');
+    window.location.href = this.authService.getLoginRedirectUrl().href;
   }
 }

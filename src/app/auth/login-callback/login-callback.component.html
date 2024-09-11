@@ -1,1 +1,26 @@
-<p>login-callback works!</p>
+<nb-layout>
+  <nb-layout-column class="login-callback-page">
+    @if (isLoading) {
+    <nb-spinner></nb-spinner>
+    } @else { @if (isSuccessful) {
+    <nb-card accent="success">
+      <nb-card-body>Login Success!</nb-card-body>
+    </nb-card>
+    } @else {
+    <nb-card accent="danger">
+      <nb-card-header>Login Failed</nb-card-header>
+      <img
+        class="login-callback-page__image"
+        src="/assets/sad-cat.png"
+        alt="Login failed picture"
+      />
+      <nb-card-body> Please login again </nb-card-body>
+      <nb-card-footer>
+        <button nbButton (click)="handleHomePageButtonClick()">
+          <nb-icon icon="home"></nb-icon> Go back to the home page
+        </button>
+      </nb-card-footer>
+    </nb-card>
+    } }
+  </nb-layout-column>
+</nb-layout>

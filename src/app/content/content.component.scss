@@ -1,0 +1,15 @@
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.image-cards-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.image-card {
+  width: fit-content;
+}
