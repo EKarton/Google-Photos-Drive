@@ -2,15 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, throwError } from 'rxjs';
 import { GetTokenResponse, RefreshAccessTokenResponse } from './AuthResponses';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private scopes = ['https://www.googleapis.com/auth/photoslibrary.readonly'];
-  private clientId = import.meta.env.NG_APP_GOOGLE_CLIENT_ID;
-  private clientSecret = import.meta.env.NG_APP_GOOGLE_CLIENT_SECRET;
-  private redirectUri = import.meta.env.NG_APP_GOOGLE_REDIRECT_URL;
+  private clientId = environment.googleClientId;
+  private clientSecret = environment.googleClientSecret;
+  private redirectUri = environment.googleRedirectUrl;
 
   private state: string;
   private accessToken: string;
@@ -18,8 +19,8 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient) {
     this.state = '123';
-    this.accessToken = localStorage.getItem('access_token') || '';
-    this.refreshToken = localStorage.getItem('refresh_token') || '';
+    this.accessToken = localStorage.getItem('access_token') ?? '';
+    this.refreshToken = localStorage.getItem('refresh_token') ?? '';
   }
 
   /** Get the access token. */
@@ -42,7 +43,9 @@ export class AuthService {
       .pipe(
         map((res) => {
           this.accessToken = res.access_token;
-          localStorage.setItem('access_token', this.accessToken);
+          this.refreshToken = res.refresh_token;
+          localStorage.setItem('access_token', res.access_token);
+          localStorage.setItem('refresh_token', res.refresh_token);
           return res.access_token;
         })
       );
@@ -63,7 +66,7 @@ export class AuthService {
   }
 
   /** Exchanges the code and state with the access token */
-  exchangeCodeWithTokens(state: string, code: string) {
+  exchangeCodeWithTokens(state: string, code: string): Observable<void> {
     if (state !== this.state) {
       return throwError(() => new Error('Invalid state'));
     }
@@ -94,7 +97,7 @@ export class AuthService {
   }
 
   /** Revokes the access token */
-  logout(): Observable<object> {
+  logout() {
     const url = 'https://accounts.google.com/o/oauth2/revoke';
     const body = { token: this.accessToken };
 

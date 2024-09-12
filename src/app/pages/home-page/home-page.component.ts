@@ -7,7 +7,7 @@ import {
   NbSidebarModule,
   NbSidebarService,
 } from '@nebular/theme';
-import { AuthService } from '../../core/auth/auth.service';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-home-page',

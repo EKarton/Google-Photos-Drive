@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/auth/auth.service';
+import { AuthService } from '../../core/auth/Auth.service';
 import {
   NbButtonModule,
   NbCardModule,

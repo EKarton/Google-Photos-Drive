@@ -79,7 +79,7 @@ export class TreeRepositoryService {
       photos: defer(() =>
         this.mediaItemsRepositoryService
           .getMediaItemsStream()
-          .pipe(take(5), toArray())
+          .pipe(take(35), toArray())
       ),
     };
 
@@ -129,7 +129,7 @@ export class TreeRepositoryService {
         curNode.photos = defer(() =>
           this.mediaItemsRepositoryService
             .getMediaItemsStream(album.id)
-            .pipe(take(5), toArray())
+            .pipe(take(35), toArray())
         );
 
         return rootNode;

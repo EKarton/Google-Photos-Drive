@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
+import { AuthService } from './Auth.service';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -19,7 +19,7 @@ export class AuthRequestIntercepter implements HttpInterceptor {
    * Intercepts the Http request
    * @param req the original request
    * @param next the request handler
-   * @returns
+   * @returns an observable, with a HttpEvent
    */
   intercept(
     req: HttpRequest<object>,
