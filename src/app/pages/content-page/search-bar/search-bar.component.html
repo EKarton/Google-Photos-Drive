@@ -1,0 +1,15 @@
+<input
+  nbInput
+  fullWidth
+  type="text"
+  placeholder="Enter value"
+  [nbAutocomplete]="auto"
+  [formControl]="inputFormControl"
+/>
+<nb-autocomplete #auto (selectedChange)="onSelectionChange($event)">
+  @for (option of (filteredOptions$ | async); track option) {
+  <nb-option [value]="option">
+    {{ option.album.title }}
+  </nb-option>
+  }
+</nb-autocomplete>

@@ -26,6 +26,7 @@ import { MediaItemsRequestService } from '../../core/media-items/MediaItemsReque
 import { MediaItem } from '../../core/media-items/MediaItems';
 import { Album, isAlbum } from '../../core/albums/Albums';
 import { DarkModeButtonComponent } from './dark-mode-button/dark-mode-button.component';
+import { LogoutButtonComponent } from './logout-button/logout-button.component';
 
 class SearchItem {
   constructor(public album: Album) {}
@@ -51,6 +52,7 @@ class SearchItem {
     NbIconModule,
     NbButtonModule,
     DarkModeButtonComponent,
+    LogoutButtonComponent,
   ],
   templateUrl: './content-page.component.html',
   styleUrl: './content-page.component.scss',

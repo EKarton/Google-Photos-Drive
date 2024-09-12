@@ -16,16 +16,18 @@ export class AuthService {
   private accessToken: string;
   private refreshToken: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private httpClient: HttpClient) {
     this.state = '123';
     this.accessToken = localStorage.getItem('access_token') || '';
     this.refreshToken = localStorage.getItem('refresh_token') || '';
   }
 
-  getAccessToken(): string | undefined {
+  /** Get the access token. */
+  getAccessToken(): string {
     return this.accessToken;
   }
 
+  /** Refresh the access token. */
   refreshAccessToken(): Observable<string> {
     const url = new URL('https://www.googleapis.com/oauth2/v4/token');
     const body = {
@@ -35,15 +37,18 @@ export class AuthService {
       grant_type: 'refresh_token',
     };
 
-    return this.http.post<RefreshAccessTokenResponse>(url.href, body).pipe(
-      map((res) => {
-        this.accessToken = res.access_token;
-        localStorage.setItem('access_token', this.accessToken);
-        return res.access_token;
-      })
-    );
+    return this.httpClient
+      .post<RefreshAccessTokenResponse>(url.href, body)
+      .pipe(
+        map((res) => {
+          this.accessToken = res.access_token;
+          localStorage.setItem('access_token', this.accessToken);
+          return res.access_token;
+        })
+      );
   }
 
+  /** Get the url to log into Google.  */
   getLoginRedirectUrl(): URL {
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     url.searchParams.append('scope', this.scopes.join(' '));
@@ -57,6 +62,7 @@ export class AuthService {
     return url;
   }
 
+  /** Exchanges the code and state with the access token */
   exchangeCodeWithTokens(state: string, code: string) {
     if (state !== this.state) {
       return throwError(() => new Error('Invalid state'));
@@ -74,7 +80,7 @@ export class AuthService {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     };
 
-    return this.http
+    return this.httpClient
       .post<GetTokenResponse>(url, params.toString(), options)
       .pipe(
         map((res) => {
@@ -85,5 +91,18 @@ export class AuthService {
           localStorage.setItem('refresh_token', this.refreshToken);
         })
       );
+  }
+
+  /** Revokes the access token */
+  logout(): Observable<Object> {
+    const url = 'https://accounts.google.com/o/oauth2/revoke';
+    const body = { token: this.accessToken };
+
+    this.accessToken = '';
+    this.refreshToken = '';
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+
+    return this.httpClient.post(url, body);
   }
 }
