@@ -11,5 +11,5 @@ export class AlbumCardComponent {
   @Input() albumTitle!: string;
   @Input() numPhotos!: number;
   @Input() numSubAlbums!: number;
-  @Input() imgSrc!: string;
+  @Input() coverPhotoBaseUrls!: string[];
 }

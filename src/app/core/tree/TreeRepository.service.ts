@@ -71,7 +71,7 @@ export class TreeRepositoryService {
     const rootTreeNode = {
       id: uuidv4(),
       title: 'Home',
-      coverPhotoBaseUrl: [],
+      coverPhotoBaseUrls: [],
       totalMediaItemsCount: 0,
       childNodes: [],
       numPhotos: 0,
@@ -96,7 +96,7 @@ export class TreeRepositoryService {
             const newNode = {
               id: uuidv4(),
               title: title,
-              coverPhotoBaseUrl: [album.coverPhotoBaseUrl],
+              coverPhotoBaseUrls: [album.coverPhotoBaseUrl],
               totalMediaItemsCount: album.mediaItemsCount,
               childNodes: [],
               numPhotos: 0,
@@ -106,14 +106,14 @@ export class TreeRepositoryService {
             curNode = newNode;
           } else {
             foundChildNode.totalMediaItemsCount += album.mediaItemsCount;
-            foundChildNode.coverPhotoBaseUrl.push(album.coverPhotoBaseUrl);
-            foundChildNode.coverPhotoBaseUrl = this.shuffleArray(
-              foundChildNode.coverPhotoBaseUrl
+            foundChildNode.coverPhotoBaseUrls.push(album.coverPhotoBaseUrl);
+            foundChildNode.coverPhotoBaseUrls = this.shuffleArray(
+              foundChildNode.coverPhotoBaseUrls
             );
 
-            if (foundChildNode.coverPhotoBaseUrl.length > 6) {
-              foundChildNode.coverPhotoBaseUrl =
-                foundChildNode.coverPhotoBaseUrl.slice(0, 6);
+            if (foundChildNode.coverPhotoBaseUrls.length > 6) {
+              foundChildNode.coverPhotoBaseUrls =
+                foundChildNode.coverPhotoBaseUrls.slice(0, 6);
             }
 
             curNode = foundChildNode;
@@ -121,7 +121,7 @@ export class TreeRepositoryService {
         }
 
         curNode.numPhotos = album.mediaItemsCount;
-        curNode.coverPhotoBaseUrl = [album.coverPhotoBaseUrl];
+        curNode.coverPhotoBaseUrls = [album.coverPhotoBaseUrl];
         curNode.photos = defer(() =>
           this.mediaItemsRepositoryService
             .getMediaItemsStream(album.id)
