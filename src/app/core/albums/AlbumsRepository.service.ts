@@ -7,6 +7,7 @@ import {
   mergeMap,
   Observable,
   shareReplay,
+  switchMap,
 } from 'rxjs';
 import { Album } from './Albums';
 import { AlbumsRequestService } from './AlbumsRequest.service';
@@ -21,6 +22,11 @@ export class AlbumsRepositoryService {
 
   constructor(private albumsRequestService: AlbumsRequestService) {}
 
+  /**
+   * Get all of the albums in a stream (including those shared and owned).
+   *
+   * @returns a stream of albums
+   */
   getAllAlbumsStream(): Observable<Album> {
     const flow1 = this.getAlbums();
     const flow2 = this.getSharedAlbums();
