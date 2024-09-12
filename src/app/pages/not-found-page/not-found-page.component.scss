@@ -1,0 +1,12 @@
+.not-found-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  &__image {
+    height: 40vh;
+    object-fit: contain;
+  }
+}

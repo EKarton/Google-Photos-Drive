@@ -20,7 +20,7 @@
       <nb-autocomplete #auto>
         @for (option of (filteredOptions$ | async); track option) {
         <nb-option [value]="option">
-          {{ option }}
+          {{ option.title }}
         </nb-option>
         }
       </nb-autocomplete>

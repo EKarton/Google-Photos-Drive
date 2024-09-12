@@ -26,31 +26,45 @@ export class TreeRepositoryService {
     private mediaItemsRequestService: MediaItemsRequestService
   ) {}
 
-  getTreeNodeFromTitlePrefix(
-    titlePrefix = ''
-  ): Observable<TreeNode | null> {
+  getTreeNodeFromTitlePrefix(titlePrefix = ''): Observable<TreeNode | null> {
     if (!this.rootNode) {
       this.rootNode = this.createTree().pipe(shareReplay(1));
     }
 
-    const titlesToSearchFor = titlePrefix.split('/').splice(1);
+    const titlesToSearchFor = titlePrefix.split('/');
 
     return this.rootNode.pipe(
       map((node) => {
-        let curNode = node;
-        for (const title of titlesToSearchFor) {
-          const foundChildNode = curNode.childNodes.find(
-            (node) => node.title === title
-          );
-
-          if (!foundChildNode) {
+        function findNode(
+          node: TreeNode,
+          curTitleIdx: number
+        ): TreeNode | null {
+          if (curTitleIdx >= titlesToSearchFor.length) {
             return null;
           }
 
-          curNode = foundChildNode;
+          const firstTitle = titlesToSearchFor[curTitleIdx];
+          if (node.title !== firstTitle) {
+            return null;
+          }
+
+          console.log(curTitleIdx, titlesToSearchFor.length, firstTitle);
+
+          if (curTitleIdx === titlesToSearchFor.length - 1) {
+            return node.title === firstTitle ? node : null;
+          }
+
+          for (const childNode of node.childNodes) {
+            const foundNode = findNode(childNode, curTitleIdx + 1);
+            if (foundNode) {
+              return foundNode;
+            }
+          }
+
+          return null;
         }
 
-        return curNode;
+        return findNode(node, 0);
       })
     );
   }
@@ -79,17 +93,11 @@ export class TreeRepositoryService {
       reduce((rootNode: TreeNode, album: Album) => {
         const titles = album.title.split('/');
 
-        console.log('Root node');
-        console.log(rootNode);
-
         let curNode = rootNode;
         for (const title of titles) {
           const foundChildNode = curNode.childNodes.find(
             (node) => node.title === title
           );
-
-          console.log(`FoundChildNode for ${title}:`);
-          console.log(foundChildNode);
 
           if (!foundChildNode) {
             const newNode = {

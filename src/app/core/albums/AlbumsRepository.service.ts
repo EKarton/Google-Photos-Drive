@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import {
+  combineLatest,
+  distinct,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  shareReplay,
+} from 'rxjs';
 import { Album } from './Albums';
 import { AlbumsRequestService } from './AlbumsRequest.service';
 
@@ -12,6 +20,17 @@ export class AlbumsRepositoryService {
   private albumsCache: Observable<Album[]> | undefined;
 
   constructor(private albumsRequestService: AlbumsRequestService) {}
+
+  getAllAlbumsStream(): Observable<Album> {
+    const flow1 = this.getAlbums();
+    const flow2 = this.getSharedAlbums();
+
+    return combineLatest([flow1, flow2]).pipe(
+      map(([array1, array2]) => [...array1, ...array2]),
+      mergeMap((albums) => from(albums)),
+      distinct((album) => album.id)
+    );
+  }
 
   /**
    * Returns all shared albums.

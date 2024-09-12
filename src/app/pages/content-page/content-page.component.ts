@@ -9,8 +9,8 @@ import {
   NbSearchModule,
 } from '@nebular/theme';
 import { Base64 } from 'js-base64';
-import { EMPTY, Observable, of } from 'rxjs';
-import { map, mergeMap, startWith } from 'rxjs/operators';
+import { combineLatest, EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { distinct, map, mergeMap, startWith, take } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { ComponentsModule } from '../../components/components.module';
 import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
 import { MediaItemsRequestService } from '../../core/media-items/MediaItemsRequest.service';
 import { MediaItem } from '../../core/media-items/MediaItems';
+import { Album } from '../../core/albums/Albums';
 
 @Component({
   selector: 'app-content-page',
@@ -52,8 +53,8 @@ import { MediaItem } from '../../core/media-items/MediaItems';
   ],
 })
 export class ContentPageComponent implements OnInit {
-  options: string[] = ['Option 1', 'Option 2', 'Option 3'];
-  filteredOptions$: Observable<string[]> = of(this.options);
+  options: Album[] = [];
+  filteredOptions$: Observable<Album[]> = of(this.options);
   inputFormControl: FormControl = new FormControl();
 
   treeNode: TreeNode | null = null;
@@ -63,23 +64,45 @@ export class ContentPageComponent implements OnInit {
 
   constructor(
     private treeRepositoryService: TreeRepositoryService,
+    private albumsRepositoryService: AlbumsRepositoryService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
+    this.albumsRepositoryService.getAllAlbumsStream().subscribe({
+      next: (album) => {
+        this.options = [...this.options, album];
+        console.log(album);
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 401 || err.status === 400) {
+          this.router.navigateByUrl('/auth/login');
+        } else {
+          this.router.navigateByUrl('/400');
+        }
+      },
+    });
+
     this.route.paramMap.subscribe((params) => {
       this.treeNode = null;
       this.photos = null;
-      this.path = Base64.decode(params.get('pathId')!);
-      this.pathBreadcrumbs = this.getBreadcrumbs(this.path);
+      this.options = [];
+
+      try {
+        this.path = Base64.decode(params.get('pathId')!);
+      } catch (err) {
+        console.error('Error while parsing path from url', err);
+        this.router.navigateByUrl('/500');
+        return;
+      }
 
       this.treeRepositoryService
         .getTreeNodeFromTitlePrefix(this.path)
         .pipe(
           mergeMap((treeNode) => {
             if (!treeNode) {
-              return EMPTY;
+              return throwError(() => new Error('No tree node found'));
             }
 
             return treeNode.photos.pipe(
@@ -93,13 +116,16 @@ export class ContentPageComponent implements OnInit {
           next: ({ treeNode, photos }) => {
             this.treeNode = treeNode;
             this.photos = photos;
+            this.pathBreadcrumbs = this.getBreadcrumbs(this.path);
           },
           error: (err: HttpErrorResponse) => {
+            console.error('ERROR' + err);
+
             if (err.status === 401 || err.status === 400) {
               this.router.navigateByUrl('/auth/login');
+            } else {
+              this.router.navigateByUrl('/400');
             }
-
-            console.error('ERROR' + err);
           },
         });
     });
@@ -110,11 +136,15 @@ export class ContentPageComponent implements OnInit {
     );
   }
 
-  private filter(value: string): string[] {
+  private filter(value: string): Album[] {
     const filterValue = value.toLowerCase();
-    return this.options.filter((optionValue) =>
-      optionValue.toLowerCase().includes(filterValue)
+    return this.options.filter((album) =>
+      album.title.toLowerCase().includes(filterValue)
     );
+  }
+
+  onSelectionChange(event: any) {
+    console.log(event);
   }
 
   getBreadcrumbs(path: string): Breadcrumb[] {
