@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   NbAutocompleteModule,
@@ -9,9 +9,9 @@ import {
   NbSearchModule,
 } from '@nebular/theme';
 import { map, Observable, of, startWith } from 'rxjs';
-import { AlbumsRepositoryService } from '../../../core/albums/AlbumsRepository.service';
+import { AlbumsRepositoryService } from '../../../../core/albums/AlbumsRepository.service';
 import { Router } from '@angular/router';
-import { Album } from '../../../core/albums/Albums';
+import { Album } from '../../../../core/albums/Albums';
 import { Base64 } from 'js-base64';
 
 @Component({
@@ -29,7 +29,7 @@ import { Base64 } from 'js-base64';
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss',
 })
-export class SearchBarComponent {
+export class SearchBarComponent implements OnInit {
   options: SearchItem[] = [];
   filteredOptions$: Observable<SearchItem[]> = of(this.options);
   inputFormControl: FormControl = new FormControl();
@@ -75,7 +75,6 @@ export class SearchBarComponent {
     if (selectedOption) {
       const path = `Home/${selectedOption.album.title}`;
       this.router.navigate(['/content', Base64.encode(path)]);
-      this.inputFormControl.setValue('', { emitEvent: false });
     }
   }
 }

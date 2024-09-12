@@ -1,0 +1,14 @@
+<div>
+  <h5 class="albums-section__header">Albums</h5>
+  <div class="albums-section__cards-list">
+    @for (album of albums; track album.id) {
+    <app-album-card
+      [albumTitle]="album.title"
+      [numPhotos]="album.numPhotos"
+      [numSubAlbums]="album.childNodes.length"
+      [imgSrc]="album.coverPhotoBaseUrl[0]"
+      (click)="albumClick(album)"
+    />
+    }
+  </div>
+</div>

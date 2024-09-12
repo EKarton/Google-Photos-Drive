@@ -94,7 +94,7 @@ export class AuthService {
   }
 
   /** Revokes the access token */
-  logout(): Observable<Object> {
+  logout(): Observable<object> {
     const url = 'https://accounts.google.com/o/oauth2/revoke';
     const body = { token: this.accessToken };
 

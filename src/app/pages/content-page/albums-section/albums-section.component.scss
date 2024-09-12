@@ -1,0 +1,12 @@
+.albums-section {
+  &__header {
+    margin-top: 0;
+  }
+
+  &__cards-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 15rem);
+    grid-template-rows: auto;
+    gap: 2.5rem;
+  }
+}

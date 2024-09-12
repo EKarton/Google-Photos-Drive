@@ -1,16 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  combineLatest,
-  defer,
-  distinct,
-  from,
-  map,
-  mergeMap,
-  Observable,
-  of,
-  reduce,
-  shareReplay,
-} from 'rxjs';
+import { defer, map, Observable, of, reduce, shareReplay } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { TreeNode } from './TreeNode';
 import { AlbumsRepositoryService } from '../albums/AlbumsRepository.service';
@@ -73,11 +62,7 @@ export class TreeRepositoryService {
     const flow1 = this.albumsRepositoryService.getAlbums();
     const flow2 = this.albumsRepositoryService.getSharedAlbums();
 
-    const mergedAlbums = combineLatest([flow1, flow2]).pipe(
-      map(([array1, array2]) => [...array1, ...array2]),
-      mergeMap((albums) => from(albums)),
-      distinct((album) => album.id)
-    );
+    const mergedAlbums = this.albumsRepositoryService.getAllAlbumsStream();
 
     const rootTreeNode = {
       id: uuidv4(),

@@ -1,0 +1,17 @@
+.content-page-header {
+  display: flex;
+  align-items: center;
+  
+  &__logo {
+    flex-grow: 0;
+  }
+
+  &__search-bar {
+    flex-grow: 1;
+    margin: 0 1rem;
+  }
+
+  &__settings {
+    flex-grow: 0;
+  }
+}

@@ -1,74 +1,13 @@
 <nb-layout>
   <nb-layout-header>
-    <span class="content-page-header__logo">
-      <img
-        src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
-        alt="Google logo"
-      />
-      <span>
-        <h5 class="logo__text">Photos Drive</h5>
-      </span>
-    </span>
-    <span class="content-page-header__search-bar">
-      <input
-        nbInput
-        fullWidth
-        type="text"
-        placeholder="Enter value"
-        [nbAutocomplete]="auto"
-        [formControl]="inputFormControl"
-      />
-      <nb-autocomplete #auto (selectedChange)="onSelectionChange($event)">
-        @for (option of (filteredOptions$ | async); track option) {
-        <nb-option [value]="option">
-          {{ option.album.title }}
-        </nb-option>
-        }
-      </nb-autocomplete>
-    </span>
-    <span class="content-page-header__settings">
-      <app-dark-mode-button />
-      <app-logout-button />
-    </span>
+    <app-header class="content-page__header" />
   </nb-layout-header>
   <nb-layout-column>
-    <app-breadcrumbs
-      class="content-page__breadcrumbs"
-      [items]="pathBreadcrumbs"
-    ></app-breadcrumbs>
-    <div>
-      @if (treeNode && treeNode.childNodes.length > 0) {
-      <div>
-        <h5 class="content-page__section-header">Albums</h5>
-        <div class="image-cards-list">
-          @for (childNode of treeNode.childNodes; track childNode.id) {
-          <app-album-card
-            [albumTitle]="childNode.title"
-            [numPhotos]="childNode.numPhotos"
-            [numSubAlbums]="childNode.childNodes.length"
-            [imgSrc]="childNode.coverPhotoBaseUrl[0]"
-            (click)="albumClick(childNode)"
-          />
-          }
-        </div>
-      </div>
-      }
-    </div>
-    <div>
-      @if (photos && photos.length > 0) {
-      <div>
-        <h5 class="content-page__section-header">Photos</h5>
-        <div class="image-cards-list">
-          @for (photo of photos; track photo.id) {
-          <app-photo-card
-            [imgSrc]="photo.baseUrl"
-            [imgName]="photo.filename"
-            (click)="handlePhotoClick(photo)"
-          />
-          }
-        </div>
-      </div>
-      }
-    </div>
+    <app-path-breadcrumbs class="content-page__breadcrumbs" [path]="path" />
+    @if (treeNode && treeNode.childNodes.length > 0) {
+    <app-albums-section [albums]="treeNode.childNodes" [path]="path" />
+    } @if (photos && photos.length > 0) {
+    <app-photos-section [photos]="photos" />
+    }
   </nb-layout-column>
 </nb-layout>
