@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { EMPTY, expand, Observable, reduce, scan, throwError } from 'rxjs';
+import { EMPTY, expand, Observable, scan, throwError } from 'rxjs';
 import {
   Album,
   AlbumsPagedResponse,

@@ -7,7 +7,6 @@ import {
   mergeMap,
   Observable,
   shareReplay,
-  switchMap,
 } from 'rxjs';
 import { Album } from './Albums';
 import { AlbumsRequestService } from './AlbumsRequest.service';

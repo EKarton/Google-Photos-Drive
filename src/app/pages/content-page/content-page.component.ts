@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NbLayoutModule } from '@nebular/theme';
 import { Base64 } from 'js-base64';
 import { throwError } from 'rxjs';
-import { delay, first, map, mergeMap, switchMap } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';

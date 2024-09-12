@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import {
   defer,
-  delay,
   map,
   Observable,
   of,
-  reduce,
   scan,
   shareReplay,
   take,
