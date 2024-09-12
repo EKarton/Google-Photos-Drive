@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Better-Albums-for-Google-Photos": {
+    "Google-Photos-Drive": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@ngx-env/builder:application",
           "options": {
-            "outputPath": "dist/better-albums-for-google-photos",
+            "outputPath": "dist/google-photos-drive",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -66,10 +66,10 @@
           "builder": "@ngx-env/builder:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "Better-Albums-for-Google-Photos:build:production"
+              "buildTarget": "Google-Photos-Drive:build:production"
             },
             "development": {
-              "buildTarget": "Better-Albums-for-Google-Photos:build:development"
+              "buildTarget": "Google-Photos-Drive:build:development"
             }
           },
           "defaultConfiguration": "development"
