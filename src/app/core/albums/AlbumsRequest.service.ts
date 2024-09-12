@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { EMPTY, expand, Observable, reduce, take } from 'rxjs';
+import { EMPTY, expand, Observable, reduce, scan } from 'rxjs';
 import {
   Album,
   AlbumsPagedResponse,
@@ -32,8 +32,7 @@ export class AlbumsRequestService {
 
         return this.fetchSharedAlbumsPage(response.nextPageToken);
       }),
-      take(1), 
-      reduce((acc: Album[], current) => acc.concat(current.sharedAlbums!), [])
+      scan((acc: Album[], current) => acc.concat(current.sharedAlbums!), [])
     );
   }
 

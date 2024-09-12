@@ -16,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
 import { PathBreadcrumbsComponent } from './path-breadcrumbs/path-breadcrumbs.component';
 import { PhotosSectionComponent } from './photos-section/photos-section.component';
 import { AlbumsSectionComponent } from './albums-section/albums-section.component';
+import { MediaItemsRepositoryService } from '../../core/media-items/MediaItemsRepository.service';
 
 @Component({
   selector: 'app-content-page',
@@ -38,6 +39,7 @@ import { AlbumsSectionComponent } from './albums-section/albums-section.componen
     AlbumsRequestService,
     AlbumsRepositoryService,
     MediaItemsRequestService,
+    MediaItemsRepositoryService,
     TreeRepositoryService,
   ],
 })

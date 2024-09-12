@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { Injectable } from '@angular/core';
-import { EMPTY, expand, Observable, reduce, take } from 'rxjs';
+import { EMPTY, expand, mergeMap, Observable, reduce, scan, take } from 'rxjs';
 import { MediaItem, MediaItemsPagedResponse } from './MediaItems';
 
 /**
@@ -32,8 +32,7 @@ export class MediaItemsRequestService {
 
         return this.fetchMediaItemsPage(albumId, response.nextPageToken);
       }),
-      take(1),
-      reduce((acc: MediaItem[], current) => acc.concat(current.mediaItems!), [])
+      scan((acc: MediaItem[], current) => acc.concat(current.mediaItems!), [])
     );
   }
 

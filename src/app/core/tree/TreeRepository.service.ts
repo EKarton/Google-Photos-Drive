@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
-import { defer, map, Observable, of, reduce, shareReplay } from 'rxjs';
+import {
+  defer,
+  map,
+  Observable,
+  of,
+  reduce,
+  shareReplay,
+  take,
+  toArray,
+} from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { TreeNode } from './TreeNode';
 import { AlbumsRepositoryService } from '../albums/AlbumsRepository.service';
 import { Album } from '../albums/Albums';
-import { MediaItemsRequestService } from '../media-items/MediaItemsRequest.service';
+import { MediaItemsRepositoryService } from '../media-items/MediaItemsRepository.service';
 
 @Injectable()
 export class TreeRepositoryService {
@@ -12,7 +21,7 @@ export class TreeRepositoryService {
 
   constructor(
     private albumsRepositoryService: AlbumsRepositoryService,
-    private mediaItemsRequestService: MediaItemsRequestService
+    private mediaItemsRepositoryService: MediaItemsRepositoryService
   ) {}
 
   getTreeNodeFromTitlePrefix(titlePrefix = ''): Observable<TreeNode | null> {
@@ -36,8 +45,6 @@ export class TreeRepositoryService {
           if (node.title !== firstTitle) {
             return null;
           }
-
-          console.log(curTitleIdx, titlesToSearchFor.length, firstTitle);
 
           if (curTitleIdx === titlesToSearchFor.length - 1) {
             return node.title === firstTitle ? node : null;
@@ -68,7 +75,11 @@ export class TreeRepositoryService {
       totalMediaItemsCount: 0,
       childNodes: [],
       numPhotos: 0,
-      photos: defer(() => this.mediaItemsRequestService.fetchMediaItems()),
+      photos: defer(() =>
+        this.mediaItemsRepositoryService
+          .getMediaItemsStream()
+          .pipe(take(5), toArray())
+      ),
     };
 
     return mergedAlbums.pipe(
@@ -100,9 +111,9 @@ export class TreeRepositoryService {
               foundChildNode.coverPhotoBaseUrl
             );
 
-            if (foundChildNode.coverPhotoBaseUrl.length > 4) {
+            if (foundChildNode.coverPhotoBaseUrl.length > 6) {
               foundChildNode.coverPhotoBaseUrl =
-                foundChildNode.coverPhotoBaseUrl.slice(0, 4);
+                foundChildNode.coverPhotoBaseUrl.slice(0, 6);
             }
 
             curNode = foundChildNode;
@@ -112,7 +123,9 @@ export class TreeRepositoryService {
         curNode.numPhotos = album.mediaItemsCount;
         curNode.coverPhotoBaseUrl = [album.coverPhotoBaseUrl];
         curNode.photos = defer(() =>
-          this.mediaItemsRequestService.fetchMediaItems(album.id)
+          this.mediaItemsRepositoryService
+            .getMediaItemsStream(album.id)
+            .pipe(take(5), toArray())
         );
 
         return rootNode;
