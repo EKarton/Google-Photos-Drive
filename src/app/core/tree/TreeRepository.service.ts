@@ -59,9 +59,6 @@ export class TreeRepositoryService {
   }
 
   private createTree(): Observable<TreeNode> {
-    const flow1 = this.albumsRepositoryService.getAlbums();
-    const flow2 = this.albumsRepositoryService.getSharedAlbums();
-
     const mergedAlbums = this.albumsRepositoryService.getAllAlbumsStream();
 
     const rootTreeNode = {
