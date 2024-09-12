@@ -68,11 +68,12 @@ export class TreeRepositoryService {
   private createTree(): Observable<TreeNode> {
     const mergedAlbums = this.albumsRepositoryService.getAllAlbumsStream();
 
-    const rootTreeNode = {
+    const rootTreeNode: TreeNode = {
       id: uuidv4(),
       title: 'Home',
       coverPhotoBaseUrls: [],
       totalMediaItemsCount: 0,
+      totalAlbumsCount: 0,
       childNodes: [],
       numPhotos: 0,
       photos: defer(() =>
@@ -93,11 +94,12 @@ export class TreeRepositoryService {
           );
 
           if (!foundChildNode) {
-            const newNode = {
+            const newNode: TreeNode = {
               id: uuidv4(),
               title: title,
               coverPhotoBaseUrls: [album.coverPhotoBaseUrl],
               totalMediaItemsCount: album.mediaItemsCount,
+              totalAlbumsCount: 1,
               childNodes: [],
               numPhotos: 0,
               photos: of([]),
@@ -105,6 +107,7 @@ export class TreeRepositoryService {
             curNode.childNodes.push(newNode);
             curNode = newNode;
           } else {
+            foundChildNode.totalAlbumsCount += 1
             foundChildNode.totalMediaItemsCount += album.mediaItemsCount;
             foundChildNode.coverPhotoBaseUrls.push(album.coverPhotoBaseUrl);
             foundChildNode.coverPhotoBaseUrls = this.shuffleArray(
@@ -121,6 +124,7 @@ export class TreeRepositoryService {
         }
 
         curNode.numPhotos = album.mediaItemsCount;
+        curNode.totalAlbumsCount = 0;
         curNode.coverPhotoBaseUrls = [album.coverPhotoBaseUrl];
         curNode.photos = defer(() =>
           this.mediaItemsRepositoryService

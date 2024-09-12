@@ -6,6 +6,7 @@ export interface TreeNode {
   title: string;
   coverPhotoBaseUrls: string[];
   totalMediaItemsCount: number;
+  totalAlbumsCount: number;
   childNodes: TreeNode[];
   numPhotos: number;
   photos: Observable<MediaItem[]>;
