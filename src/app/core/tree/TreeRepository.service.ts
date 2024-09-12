@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   defer,
+  delay,
   map,
   Observable,
   of,
   reduce,
+  scan,
   shareReplay,
   take,
   toArray,
@@ -83,7 +85,7 @@ export class TreeRepositoryService {
     };
 
     return mergedAlbums.pipe(
-      reduce((rootNode: TreeNode, album: Album) => {
+      scan((rootNode: TreeNode, album: Album) => {
         const titles = album.title.split('/');
 
         let curNode = rootNode;

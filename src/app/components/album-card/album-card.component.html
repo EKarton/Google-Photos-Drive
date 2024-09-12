@@ -8,8 +8,14 @@
   <div class="album-card__details">
     <div>{{ albumTitle }}</div>
     <div>
+      @if (numPhotos > 0 && numSubAlbums > 0) {
       {{ numPhotos }} {{ numPhotos === 1 ? "photo" : "photos" }} &middot;
       {{ numSubAlbums }} {{ numSubAlbums === 1 ? "album" : "albums" }}
+      } @else if (numPhotos > 0) {
+      {{ numPhotos }} {{ numPhotos === 1 ? "photo" : "photos" }}
+      } @else {
+      {{ numSubAlbums }} {{ numSubAlbums === 1 ? "album" : "albums" }}
+      }
     </div>
   </div>
 </div>

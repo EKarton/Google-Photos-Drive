@@ -1,4 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Base64 } from 'js-base64';
 import { Router } from '@angular/router';
 import { Breadcrumb } from '../../../components/breadcrumbs/breadcrumb';
@@ -12,16 +18,15 @@ import { ComponentsModule } from '../../../components/components.module';
   templateUrl: './path-breadcrumbs.component.html',
   styleUrl: './path-breadcrumbs.component.scss',
 })
-export class PathBreadcrumbsComponent implements OnInit {
-  @Input() path!: string;
-
+export class PathBreadcrumbsComponent {
   pathBreadcrumbs!: Breadcrumb[];
 
-  constructor(private router: Router) {}
-
-  ngOnInit(): void {
-    this.pathBreadcrumbs = this.getBreadcrumbs(this.path);
+  @Input()
+  set path(value: string) {
+    this.pathBreadcrumbs = this.getBreadcrumbs(value);
   }
+
+  constructor(private router: Router) {}
 
   getBreadcrumbs(path: string): Breadcrumb[] {
     const pathParts = path.split('/');

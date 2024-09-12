@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NbLayoutModule } from '@nebular/theme';
 import { Base64 } from 'js-base64';
 import { throwError } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { delay, first, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -67,36 +67,42 @@ export class ContentPageComponent implements OnInit {
         return;
       }
 
-      this.treeRepositoryService
-        .getTreeNodeFromTitlePrefix(this.path)
-        .pipe(
-          mergeMap((treeNode) => {
-            if (!treeNode) {
-              return throwError(() => new Error('No tree node found'));
-            }
+      const treeNodePipe =
+        this.treeRepositoryService.getTreeNodeFromTitlePrefix(this.path);
+      const photosPipe = treeNodePipe.pipe(
+        first(),
+        switchMap((treeNode) => {
+          if (!treeNode) {
+            return throwError(() => new Error('No tree node found'));
+          }
 
-            return treeNode.photos.pipe(
-              map((photos) => {
-                return { treeNode, photos };
-              })
-            );
-          })
-        )
-        .subscribe({
-          next: ({ treeNode, photos }) => {
-            this.treeNode = treeNode;
-            this.photos = photos;
-          },
-          error: (err: HttpErrorResponse) => {
-            console.error('ERROR' + err);
+          return treeNode.photos;
+        })
+      );
 
-            if (err.status === 401 || err.status === 400) {
-              this.router.navigateByUrl('/auth/login');
-            } else {
-              this.router.navigateByUrl('/400');
-            }
-          },
-        });
+      treeNodePipe.subscribe({
+        next: (treeNode) => {
+          this.treeNode = treeNode;
+        },
+        error: this.handleObservableError,
+      });
+
+      photosPipe.subscribe({
+        next: (photos) => {
+          this.photos = photos;
+        },
+        error: this.handleObservableError,
+      });
     });
+  }
+
+  private handleObservableError(err: HttpErrorResponse) {
+    console.error('ERROR' + err);
+
+    if (err.status === 401 || err.status === 400) {
+      this.router.navigateByUrl('/auth/login');
+    } else {
+      this.router.navigateByUrl('/400');
+    }
   }
 }
