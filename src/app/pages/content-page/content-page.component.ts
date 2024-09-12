@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   NbAutocompleteModule,
+  NbButtonModule,
   NbCardModule,
+  NbIconModule,
   NbInputModule,
   NbLayoutModule,
   NbSearchModule,
@@ -22,7 +24,16 @@ import { ComponentsModule } from '../../components/components.module';
 import { Breadcrumb } from '../../components/breadcrumbs/breadcrumb';
 import { MediaItemsRequestService } from '../../core/media-items/MediaItemsRequest.service';
 import { MediaItem } from '../../core/media-items/MediaItems';
-import { Album } from '../../core/albums/Albums';
+import { Album, isAlbum } from '../../core/albums/Albums';
+import { DarkModeButtonComponent } from './dark-mode-button/dark-mode-button.component';
+
+class SearchItem {
+  constructor(public album: Album) {}
+
+  toString(): string {
+    return this.album.title;
+  }
+}
 
 @Component({
   selector: 'app-content-page',
@@ -37,6 +48,9 @@ import { Album } from '../../core/albums/Albums';
     AsyncPipe,
     NbCardModule,
     ComponentsModule,
+    NbIconModule,
+    NbButtonModule,
+    DarkModeButtonComponent,
   ],
   templateUrl: './content-page.component.html',
   styleUrl: './content-page.component.scss',
@@ -53,8 +67,8 @@ import { Album } from '../../core/albums/Albums';
   ],
 })
 export class ContentPageComponent implements OnInit {
-  options: Album[] = [];
-  filteredOptions$: Observable<Album[]> = of(this.options);
+  options: SearchItem[] = [];
+  filteredOptions$: Observable<SearchItem[]> = of(this.options);
   inputFormControl: FormControl = new FormControl();
 
   treeNode: TreeNode | null = null;
@@ -72,8 +86,7 @@ export class ContentPageComponent implements OnInit {
   async ngOnInit() {
     this.albumsRepositoryService.getAllAlbumsStream().subscribe({
       next: (album) => {
-        this.options = [...this.options, album];
-        console.log(album);
+        this.options = [...this.options, new SearchItem(album)];
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === 401 || err.status === 400) {
@@ -87,7 +100,6 @@ export class ContentPageComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.treeNode = null;
       this.photos = null;
-      this.options = [];
 
       try {
         this.path = Base64.decode(params.get('pathId')!);
@@ -132,19 +144,36 @@ export class ContentPageComponent implements OnInit {
 
     this.filteredOptions$ = this.inputFormControl.valueChanges.pipe(
       startWith(''),
-      map((filterString) => this.filter(filterString))
+      map((value?: SearchItem | string) => {
+        console.log('I am here: ' + value);
+        console.log(this.options);
+        const filterString =
+          value instanceof SearchItem ? value.album.title : value;
+        const filter = this.filter(filterString);
+        console.log('Options: ');
+        console.log(filter);
+        return filter;
+      })
     );
   }
 
-  private filter(value: string): Album[] {
+  private filter(value?: string): SearchItem[] {
+    if (!value) {
+      return this.options;
+    }
+
     const filterValue = value.toLowerCase();
-    return this.options.filter((album) =>
-      album.title.toLowerCase().includes(filterValue)
+    return this.options.filter((option) =>
+      option.album.title.toLowerCase().includes(filterValue)
     );
   }
 
-  onSelectionChange(event: any) {
-    console.log(event);
+  onSelectionChange(selectedOption?: SearchItem) {
+    if (selectedOption) {
+      const path = `Home/${selectedOption.album.title}`;
+      this.router.navigate(['/content', Base64.encode(path)]);
+      this.inputFormControl.setValue('', { emitEvent: false });
+    }
   }
 
   getBreadcrumbs(path: string): Breadcrumb[] {

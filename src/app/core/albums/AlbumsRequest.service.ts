@@ -32,7 +32,7 @@ export class AlbumsRequestService {
 
         return this.fetchSharedAlbumsPage(response.nextPageToken);
       }),
-      take(1),
+      take(1), 
       reduce((acc: Album[], current) => acc.concat(current.sharedAlbums!), [])
     );
   }

@@ -9,11 +9,19 @@
   }
 }
 
-.logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
+.content-page-header {
+  &__logo {
+    flex-grow: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__search-bar {
+    flex-grow: 1;
+    margin: 0 1rem;
+  }
 }
 
 .image-cards-list {

@@ -1,6 +1,6 @@
 <nb-layout>
   <nb-layout-header>
-    <span class="logo">
+    <span class="content-page-header__logo">
       <img
         src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg"
         alt="Google logo"
@@ -9,21 +9,25 @@
         <h5 class="logo__text">Photos Drive</h5>
       </span>
     </span>
-    <span>
+    <span class="content-page-header__search-bar">
       <input
-        [formControl]="inputFormControl"
         nbInput
+        fullWidth
         type="text"
         placeholder="Enter value"
         [nbAutocomplete]="auto"
+        [formControl]="inputFormControl"
       />
-      <nb-autocomplete #auto>
+      <nb-autocomplete #auto (selectedChange)="onSelectionChange($event)">
         @for (option of (filteredOptions$ | async); track option) {
         <nb-option [value]="option">
-          {{ option.title }}
+          {{ option.album.title }}
         </nb-option>
         }
       </nb-autocomplete>
+    </span>
+    <span class="content-page-header__settings">
+      <app-dark-mode-button />
     </span>
   </nb-layout-header>
   <nb-layout-column>
