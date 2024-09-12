@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth/auth.service';
 import { Injectable } from '@angular/core';
-import { EMPTY, expand, mergeMap, Observable, reduce, scan, take } from 'rxjs';
+import { EMPTY, expand, Observable, scan } from 'rxjs';
 import { MediaItem, MediaItemsPagedResponse } from './MediaItems';
 
 /**
