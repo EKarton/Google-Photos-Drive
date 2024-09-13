@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, mergeMap, Observable } from 'rxjs';
+import { distinct, from, mergeMap, Observable } from 'rxjs';
 import { MediaItem } from './MediaItems';
 import { MediaItemsRequestService } from './MediaItemsRequest.service';
 
@@ -33,8 +33,9 @@ export class MediaItemsRepositoryService {
   getMediaItemsStream(
     albumId: string | undefined = undefined
   ): Observable<MediaItem> {
-    return this.mediaItemsRequestService
-      .fetchMediaItems(albumId)
-      .pipe(mergeMap((mediaItems) => from(mediaItems)));
+    return this.mediaItemsRequestService.fetchMediaItems(albumId).pipe(
+      mergeMap((mediaItems) => from(mediaItems)),
+      distinct((mediaItem) => mediaItem.id)
+    );
   }
 }
