@@ -8,50 +8,10 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MediaItemsRequestService } from '../MediaItemsRequest.service';
-import { MediaItem, MediaItemsPagedResponse } from '../MediaItems';
+import { MediaItem } from '../MediaItems';
+import { page1, page2 } from './MockMediaItemsPagedResponses';
 
 describe('MediaItemsRequestService', () => {
-  const mockResponse1: MediaItemsPagedResponse = {
-    mediaItems: [
-      {
-        id: 'photo1',
-        productUrl: 'https://photos.google.com/photos/photo1',
-        baseUrl: 'https://photos.google.com/thumbnails/photo1',
-      },
-      {
-        id: 'photo2',
-        productUrl: 'https://photos.google.com/photos/photo2',
-        baseUrl: 'https://photos.google.com/thumbnails/photo2',
-      },
-      {
-        id: 'photo3',
-        productUrl: 'https://photos.google.com/photos/photo3',
-        baseUrl: 'https://photos.google.com/thumbnails/photo3',
-      },
-    ],
-    nextPageToken: 'page2',
-  };
-  const mockResponse2: MediaItemsPagedResponse = {
-    mediaItems: [
-      {
-        id: 'photo4',
-        productUrl: 'https://photos.google.com/photos/photo4',
-        baseUrl: 'https://photos.google.com/thumbnails/photo4',
-      },
-      {
-        id: 'photo5',
-        productUrl: 'https://photos.google.com/photos/photo5',
-        baseUrl: 'https://photos.google.com/thumbnails/photo5',
-      },
-      {
-        id: 'photo6',
-        productUrl: 'https://photos.google.com/photos/photo6',
-        baseUrl: 'https://photos.google.com/thumbnails/photo6',
-      },
-    ],
-    nextPageToken: '',
-  };
-
   let httpMock: HttpTestingController;
   let service: MediaItemsRequestService;
 
@@ -83,10 +43,10 @@ describe('MediaItemsRequestService', () => {
         next: (val: MediaItem[]) => emittedValues.push(val),
         error: done.fail,
         complete: () => {
-          expect(emittedValues[0]).toEqual(mockResponse1.mediaItems);
+          expect(emittedValues[0]).toEqual(page1.mediaItems);
           expect(emittedValues[1]).toEqual([
-            ...mockResponse1.mediaItems,
-            ...mockResponse2.mediaItems,
+            ...page1.mediaItems,
+            ...page2.mediaItems,
           ]);
           done();
         },
@@ -100,16 +60,16 @@ describe('MediaItemsRequestService', () => {
             req.headers.get('Authorization') === 'Bearer accessToken123' &&
             req.body['pageToken'] === undefined
         )
-        .flush(mockResponse1, { status: 200, statusText: 'OK' });
+        .flush(page1, { status: 200, statusText: 'OK' });
       httpMock
         .expectOne(
           (req) =>
             req.url ===
               'https://photoslibrary.googleapis.com/v1/mediaItems:search' &&
             req.headers.get('Authorization') === 'Bearer accessToken123' &&
-            req.body['pageToken'] === 'page2'
+            req.body['pageToken'] === page1.nextPageToken
         )
-        .flush(mockResponse2, { status: 200, statusText: 'OK' });
+        .flush(page2, { status: 200, statusText: 'OK' });
     });
 
     it('should emit correct values, given album ID', (done) => {
@@ -118,10 +78,10 @@ describe('MediaItemsRequestService', () => {
         next: (val: MediaItem[]) => emittedValues.push(val),
         error: done.fail,
         complete: () => {
-          expect(emittedValues[0]).toEqual(mockResponse1.mediaItems);
+          expect(emittedValues[0]).toEqual(page1.mediaItems);
           expect(emittedValues[1]).toEqual([
-            ...mockResponse1.mediaItems,
-            ...mockResponse2.mediaItems,
+            ...page1.mediaItems,
+            ...page2.mediaItems,
           ]);
           done();
         },
@@ -136,17 +96,17 @@ describe('MediaItemsRequestService', () => {
             req.body['pageToken'] === undefined &&
             req.body['albumId'] === 'album1'
         )
-        .flush(mockResponse1, { status: 200, statusText: 'OK' });
+        .flush(page1, { status: 200, statusText: 'OK' });
       httpMock
         .expectOne(
           (req) =>
             req.url ===
               'https://photoslibrary.googleapis.com/v1/mediaItems:search' &&
             req.headers.get('Authorization') === 'Bearer accessToken123' &&
-            req.body['pageToken'] === 'page2' &&
+            req.body['pageToken'] === page1.nextPageToken &&
             req.body['albumId'] === 'album1'
         )
-        .flush(mockResponse2, { status: 200, statusText: 'OK' });
+        .flush(page2, { status: 200, statusText: 'OK' });
     });
   });
 });

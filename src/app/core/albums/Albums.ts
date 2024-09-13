@@ -13,7 +13,7 @@ export interface Album {
   title?: string;
   productUrl: string;
   coverPhotoBaseUrl: string;
-  coverPhotoMediaItemId: string;
-  isWriteable: string;
+  coverPhotoMediaItemId?: string;
+  isWriteable?: string;
   mediaItemsCount: number;
 }
