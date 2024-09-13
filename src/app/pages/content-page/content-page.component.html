@@ -1,0 +1,13 @@
+<nb-layout>
+  <nb-layout-header>
+    <app-header class="content-page__header" />
+  </nb-layout-header>
+  <nb-layout-column>
+    <app-path-breadcrumbs class="content-page__breadcrumbs" [path]="path" />
+    @if (treeNode && treeNode.childNodes.length > 0) {
+    <app-albums-section [albums]="treeNode.childNodes" [path]="path" />
+    } @if (photos && photos.length > 0) {
+    <app-photos-section [photos]="photos" />
+    }
+  </nb-layout-column>
+</nb-layout>

@@ -1,0 +1,11 @@
+.photo-card {
+  max-width: 15rem;
+
+  &__image {
+    width: 15rem;
+    height: 15rem;
+    border-radius: 1rem;
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+  }
+}

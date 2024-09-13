@@ -1,0 +1,18 @@
+<nb-layout>
+  <nb-layout-column class="not-found-page">
+    <nb-card accent="danger">
+      <nb-card-header>Page not found</nb-card-header>
+      <img
+        class="not-found-page__image"
+        src="/assets/sad-cat.png"
+        alt="Login failed picture"
+      />
+      <nb-card-body> Please try again </nb-card-body>
+      <nb-card-footer>
+        <button nbButton (click)="handleHomePageButtonClick()">
+          <nb-icon icon="home"></nb-icon> Go back to the home page
+        </button>
+      </nb-card-footer>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

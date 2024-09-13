@@ -1,0 +1,14 @@
+<ol class="breadcrumbs">
+  @for(item of items; track $index) { @if ($last) {
+  <li class="breadcrumbs__item">
+    <span>{{ item.label }}</span>
+  </li>
+  } @else {
+  <li class="breadcrumbs__item">
+    <a href="#" (click)="$event.preventDefault(); item.onClick()">{{
+      item.label
+    }}</a>
+  </li>
+  <li class="breadcrumbs__separator">/</li>
+  } }
+</ol>

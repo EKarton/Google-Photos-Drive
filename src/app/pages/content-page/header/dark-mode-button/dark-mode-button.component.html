@@ -1,0 +1,9 @@
+<button nbButton ghost (click)="toggleButton()">
+  @if (theme === 'dark') {
+  <nb-icon icon="moon"></nb-icon>
+  } @else if (theme === 'corporate') {
+  <nb-icon icon="moon-outline"></nb-icon>
+  } @else {
+  <nb-icon icon="moon"></nb-icon>
+  }
+</button>
