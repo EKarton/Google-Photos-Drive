@@ -85,6 +85,10 @@ export class TreeRepositoryService {
 
     return mergedAlbums.pipe(
       scan((rootNode: TreeNode, album: Album) => {
+        if (!album.title) {
+          return rootNode;
+        }
+
         const titles = album.title.split('/');
 
         let curNode = rootNode;
@@ -107,7 +111,7 @@ export class TreeRepositoryService {
             curNode.childNodes.push(newNode);
             curNode = newNode;
           } else {
-            foundChildNode.totalAlbumsCount += 1
+            foundChildNode.totalAlbumsCount += 1;
             foundChildNode.totalMediaItemsCount += album.mediaItemsCount;
             foundChildNode.coverPhotoBaseUrls.push(album.coverPhotoBaseUrl);
             foundChildNode.coverPhotoBaseUrls = this.shuffleArray(

@@ -10,7 +10,7 @@ export interface SharedAlbumsPagedResponse {
 
 export interface Album {
   id: string;
-  title: string;
+  title?: string;
   productUrl: string;
   coverPhotoBaseUrl: string;
   coverPhotoMediaItemId: string;

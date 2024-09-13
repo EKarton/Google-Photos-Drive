@@ -61,11 +61,11 @@ export class SearchBarComponent implements OnInit {
         }
 
         const filterString =
-          value instanceof SearchItem ? value.album.title : value;
+          value instanceof SearchItem ? value.album?.title || '' : value;
 
         const filterValue = filterString.toLowerCase();
         return this.options.filter((option) =>
-          option.album.title.toLowerCase().includes(filterValue)
+          option.album.title?.toLowerCase().includes(filterValue)
         );
       })
     );
@@ -83,6 +83,6 @@ class SearchItem {
   constructor(public album: Album) {}
 
   toString(): string {
-    return this.album.title;
+    return this.album.title ?? 'Album with no title';
   }
 }
