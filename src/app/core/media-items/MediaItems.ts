@@ -5,22 +5,22 @@ export interface MediaItemsPagedResponse {
 
 export interface MediaItem {
   id: string;
-  description: string;
+  description?: string;
   productUrl: string;
   baseUrl: string;
-  mimeType: string;
-  mediaMetadata: {
+  mimeType?: string;
+  mediaMetadata?: {
     creationTime: string;
     width: string;
     height: string;
     photo: PhotoMediaItemMetadata | undefined;
     video: VideoMediaItemMetadata | undefined;
   };
-  contributorInfo: {
+  contributorInfo?: {
     profilePictureBaseUrl: string;
     displayName: string;
   };
-  filename: string;
+  filename?: string;
 }
 
 export interface PhotoMediaItemMetadata {
