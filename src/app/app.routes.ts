@@ -10,6 +10,6 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginPageComponent },
   { path: 'auth/login/callback', component: LoginCallbackPageComponent },
   { path: 'content/:pathId', component: ContentPageComponent },
-  { path: '400', component: NotFoundPageComponent },
-  { path: '**', redirectTo: '400' },
+  { path: '404', component: NotFoundPageComponent },
+  { path: '**', redirectTo: '404' },
 ];

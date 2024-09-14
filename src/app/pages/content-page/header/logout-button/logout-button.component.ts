@@ -17,12 +17,12 @@ export class LogoutButtonComponent {
     this.authService.logout().subscribe({
       next: () => {
         console.log('Logged out successfully');
-        this.router.navigate(['/']);
+        this.router.navigateByUrl('/');
       },
       error: (err) => {
         console.error('Failed to log out successfully');
         console.error(err);
-        this.router.navigate(['/']);
+        this.router.navigateByUrl('/500');
       },
     });
   }

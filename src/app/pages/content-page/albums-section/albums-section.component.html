@@ -5,7 +5,9 @@
     <app-album-card
       [albumTitle]="album.title"
       [numPhotos]="album.numPhotos"
-      [numSubAlbums]="album.totalAlbumsCount"
+      [numSubAlbums]="
+        album.childNodes.length === 0 ? 0 : album.totalAlbumsCount
+      "
       [coverPhotoBaseUrls]="album.coverPhotoBaseUrls"
       (click)="albumClick(album)"
     />

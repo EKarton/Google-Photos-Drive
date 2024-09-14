@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/auth/Auth.service';
 import {
   NbButtonModule,
   NbCardModule,
@@ -9,6 +8,7 @@ import {
   NbSpinnerModule,
 } from '@nebular/theme';
 import { Base64 } from 'js-base64';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-login-callback-page',
@@ -43,10 +43,15 @@ export class LoginCallbackPageComponent implements OnInit {
       next: () => {
         this.isLoading = false;
         this.isSuccessful = true;
-        setTimeout(
-          () => this.router.navigateByUrl(`/content/${Base64.encode('Home')}`),
-          1500
-        );
+
+        setTimeout(() => {
+          this.router
+            .navigateByUrl(`/content/${Base64.encode('Home')}`)
+            .then(() => console.log('Navigated to content page'))
+            .catch((err) =>
+              console.error(`Failed to navigate to content page: ${err}`)
+            );
+        }, 1500);
       },
       error: (err) => {
         this.isLoading = false;

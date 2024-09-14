@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbLayoutModule } from '@nebular/theme';
 import { Base64 } from 'js-base64';
 import { filter, first, switchMap, take, toArray } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
-import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuthRequestIntercepter } from '../../core/auth/AuthRequestIntercepter';
 import { AlbumsRequestService } from '../../core/albums/AlbumsRequest.service';
 import { TreeRepositoryService } from '../../core/tree/TreeRepository.service';
+import { MediaItemsRepositoryService } from '../../core/media-items/MediaItemsRepository.service';
 import { TreeNode } from '../../core/tree/TreeNode';
 import { MediaItemsRequestService } from '../../core/media-items/MediaItemsRequest.service';
 import { MediaItem } from '../../core/media-items/MediaItems';
@@ -15,7 +16,6 @@ import { HeaderComponent } from './header/header.component';
 import { PathBreadcrumbsComponent } from './path-breadcrumbs/path-breadcrumbs.component';
 import { PhotosSectionComponent } from './photos-section/photos-section.component';
 import { AlbumsSectionComponent } from './albums-section/albums-section.component';
-import { MediaItemsRepositoryService } from '../../core/media-items/MediaItemsRepository.service';
 
 @Component({
   selector: 'app-content-page',

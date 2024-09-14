@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   NbButtonModule,
   NbCardModule,
@@ -24,9 +24,12 @@ import { AuthService } from '../../core/auth/Auth.service';
   providers: [NbSidebarService],
 })
 export class HomePageComponent {
-  constructor(private authService: AuthService) {}
+  constructor(
+    @Inject('Window') private window: Window,
+    private authService: AuthService
+  ) {}
 
   handleLoginClick() {
-    window.location.href = this.authService.getLoginRedirectUrl().href;
+    this.window.location.href = this.authService.getLoginRedirectUrl().href;
   }
 }
