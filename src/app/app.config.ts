@@ -15,6 +15,7 @@ import {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: 'Window', useValue: window },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),

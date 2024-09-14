@@ -43,6 +43,7 @@ export class LoginCallbackPageComponent implements OnInit {
       next: () => {
         this.isLoading = false;
         this.isSuccessful = true;
+        console.error('i am here');
         setTimeout(
           () => this.router.navigateByUrl(`/content/${Base64.encode('Home')}`),
           1500

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/auth/Auth.service';
+import { Component, Inject, OnInit } from '@angular/core';
 import { NbCardModule, NbLayoutModule } from '@nebular/theme';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -10,10 +10,13 @@ import { NbCardModule, NbLayoutModule } from '@nebular/theme';
   styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(
+    @Inject('Window') private window: Window,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     const url = this.authService.getLoginRedirectUrl();
-    window.location.href = url.href;
+    this.window.location.href = url.href;
   }
 }
