@@ -24,7 +24,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies and angular
-        run: npm install
+        run: npm ci
 
       - name: Run linting
         run: npm run lint
@@ -42,7 +42,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies and angular
-        run: npm install
+        run: npm ci
 
       - name: Run all test cases
         run: npm run test --no-watch --no-progress --browsers=ChromeHeadless --code-coverage
@@ -60,7 +60,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies and angular
-        run: npm install
+        run: npm ci
 
       - name: Build the app
         run: npm run build
