@@ -30,7 +30,9 @@ jobs:
         run: npm ci
 
       - name: Build the app
-        run: npm run build
+        run: |
+          export NODE_ENV=production
+          npm run build
 
       - name: Deploy the app to Netify
         run: |
