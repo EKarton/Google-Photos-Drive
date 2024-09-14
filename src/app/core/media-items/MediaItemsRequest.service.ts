@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../auth/Auth.service';
+import { AuthService } from '../auth/dsajfajf';
 import { Injectable } from '@angular/core';
 import { EMPTY, expand, Observable, scan } from 'rxjs';
 import { MediaItem, MediaItemsPagedResponse } from './MediaItems';

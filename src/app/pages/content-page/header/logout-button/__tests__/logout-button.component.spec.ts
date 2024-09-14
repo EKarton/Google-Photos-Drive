@@ -5,7 +5,7 @@ import { importProvidersFrom } from '@angular/core';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbThemeModule } from '@nebular/theme';
 import { LogoutButtonComponent } from '../logout-button.component';
-import { AuthService } from '../../../../../core/auth/Auth.service';
+import { AuthService } from '../../../../../core/auth/dsajfajf';
 
 describe('LogoutButtonComponent', () => {
   let component: LogoutButtonComponent;

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../Auth.service';
+import { AuthService } from '../dsajfajf';
 import { defer } from 'rxjs';
 import { GetTokenResponse, RefreshAccessTokenResponse } from '../AuthResponses';
 import { environment } from '../../../../environments/environment';

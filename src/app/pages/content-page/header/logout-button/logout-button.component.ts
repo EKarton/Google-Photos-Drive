@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../../../core/auth/Auth.service';
+import { AuthService } from '../../../../core/auth/dsajfajf';
 import { Router } from '@angular/router';
 import { NbButtonModule, NbIconModule, NbLayoutModule } from '@nebular/theme';
 

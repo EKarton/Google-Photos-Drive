@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
-import { AuthService } from '../../../core/auth/Auth.service';
+import { AuthService } from '../../../core/auth/dsajfajf';
 import { LoginPageComponent } from '../login-page.component';
 
 describe('LoginPageComponent', () => {
