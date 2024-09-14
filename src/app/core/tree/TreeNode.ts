@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
-import { MediaItem } from '../media-items/MediaItems';
-
+/**
+ * Represents a tree node in a tree
+ */
 export interface TreeNode {
   id: string;
   title: string;
@@ -9,5 +9,6 @@ export interface TreeNode {
   totalAlbumsCount: number;
   childNodes: TreeNode[];
   numPhotos: number;
-  photos: Observable<MediaItem[]>;
+  isAlbum: boolean;
+  albumId?: string;
 }
