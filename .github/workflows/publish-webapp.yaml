@@ -14,7 +14,6 @@ jobs:
     name: Deploy to Netify
     runs-on: ubuntu-latest
     env:
-      NODE_ENV: "production"
       NG_APP_GOOGLE_CLIENT_ID: ${{ secrets.NG_APP_PROD_GOOGLE_CLIENT_ID }}
       NG_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.NG_APP_PROD_GOOGLE_CLIENT_SECRET }}
       NG_APP_GOOGLE_REDIRECT_URL: ${{ secrets.NG_APP_PROD_GOOGLE_REDIRECT_URL }}
