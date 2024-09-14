@@ -1,25 +1,27 @@
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { LoginCallbackPageComponent } from '../login-callback-page.component';
 import { provideRouter, Router } from '@angular/router';
-import { AuthService } from '../../../core/auth/Auth.service';
-import { EMPTY, of, throwError } from 'rxjs';
-import { importProvidersFrom } from '@angular/core';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { Component, importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { Base64 } from 'js-base64';
-import { Location } from '@angular/common';
+import { AuthService } from '../../../core/auth/Auth.service';
+
+@Component({
+  selector: 'app-test-empty-component',
+  standalone: true,
+})
+class TestEmptyComponent {}
 
 describe('LoginCallbackComponent', () => {
-  let routerSpy: jasmine.SpyObj<Router>;
   let authServiceMock: jasmine.SpyObj<AuthService>;
-  let location: Location;
+  let router: Router;
 
   beforeEach(async () => {
-    routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
-    routerSpy.navigateByUrl.and.resolveTo(true);
-    authServiceMock = jasmine.createSpyObj(AuthService, [
+    authServiceMock = jasmine.createSpyObj('AuthService', [
       'exchangeCodeWithTokens',
     ]);
 
@@ -35,6 +37,10 @@ describe('LoginCallbackComponent', () => {
             path: 'auth/login/callback',
             component: LoginCallbackPageComponent,
           },
+          {
+            path: 'content/:pathId',
+            component: TestEmptyComponent,
+          },
         ]),
         provideLocationMocks(),
         importProvidersFrom(NbThemeModule.forRoot({ name: 'default' })),
@@ -43,7 +49,7 @@ describe('LoginCallbackComponent', () => {
     }).compileComponents();
 
     jasmine.clock().install();
-    location = TestBed.inject(Location);
+    router = TestBed.inject(Router);
   });
 
   afterEach(() => {
@@ -51,7 +57,7 @@ describe('LoginCallbackComponent', () => {
   });
 
   it('should redirect user to content page, given correct code and state in query params', async () => {
-    authServiceMock.exchangeCodeWithTokens.and.returnValue(of());
+    authServiceMock.exchangeCodeWithTokens.and.returnValue(of(undefined));
     const harness = await RouterTestingHarness.create();
     const fixture = harness.fixture;
 
@@ -62,11 +68,15 @@ describe('LoginCallbackComponent', () => {
     harness.detectChanges();
 
     expect(component).toBeTruthy();
-    // const element = fixture.nativeElement.querySelector('nb-card-body');
-    // expect(element.textContent).toEqual('Login Success!');
+    const element = fixture.nativeElement.querySelector('nb-card-body');
+    expect(element.textContent).toEqual('Login Success!');
 
     jasmine.clock().tick(5000);
-    expect(location.path()).toEqual(`/content/${Base64.encode('Home')}`);
+    const lastRouterEvent = await firstValueFrom(router.events);
+    const expectedUrl = `/content/${encodeURIComponent(Base64.encode('Home'))}`;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((lastRouterEvent as any).url).toEqual(expectedUrl);
   });
 
   it('should show error page, given incorrect code and state in query params', async () => {
