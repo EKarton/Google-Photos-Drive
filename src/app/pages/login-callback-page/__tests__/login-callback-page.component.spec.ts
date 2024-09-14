@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideLocationMocks } from '@angular/common/testing';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { LoginCallbackPageComponent } from '../login-callback-page.component';
 import { provideRouter, Router } from '@angular/router';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { Component, importProvidersFrom } from '@angular/core';
@@ -9,6 +8,7 @@ import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { Base64 } from 'js-base64';
 import { AuthService } from '../../../core/auth/Auth.service';
+import { LoginCallbackPageComponent } from '../login-callback-page.component';
 
 @Component({
   selector: 'app-test-empty-component',

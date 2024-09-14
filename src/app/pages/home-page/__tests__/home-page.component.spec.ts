@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomePageComponent } from '../home-page.component';
-import { AuthService } from '../../../core/auth/Auth.service';
 import { importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { AuthService } from '../../../core/auth/Auth.service';
+import { HomePageComponent } from '../home-page.component';
 
 describe('HomePageComponent', () => {
   let mockAuthService: jasmine.SpyObj<AuthService>;

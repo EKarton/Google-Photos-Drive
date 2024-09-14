@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MediaItem } from '../../../core/media-items/MediaItems';
-import { ComponentsModule } from '../../../components/components.module';
 import { PhotoCardComponent } from '../../../components/photo-card/photo-card.component';
+import { ComponentsModule } from '../../../components/components.module';
 
 @Component({
   selector: 'app-photos-section',

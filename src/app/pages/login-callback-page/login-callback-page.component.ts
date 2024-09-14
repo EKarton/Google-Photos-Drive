@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../core/auth/Auth.service';
 import {
   NbButtonModule,
   NbCardModule,
@@ -9,6 +8,7 @@ import {
   NbSpinnerModule,
 } from '@nebular/theme';
 import { Base64 } from 'js-base64';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-login-callback-page',

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PathBreadcrumbsComponent } from '../path-breadcrumbs.component';
-import { Base64 } from 'js-base64';
 import { Router } from '@angular/router';
+import { Base64 } from 'js-base64';
+import { PathBreadcrumbsComponent } from '../path-breadcrumbs.component';
 
 describe('PathBreadcrumbsComponent', () => {
   let component: PathBreadcrumbsComponent;

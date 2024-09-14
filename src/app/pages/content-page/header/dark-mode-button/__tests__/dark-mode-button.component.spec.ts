@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DarkModeButtonComponent } from '../dark-mode-button.component';
 import { NbThemeModule, NbThemeService } from '@nebular/theme';
 import { importProvidersFrom } from '@angular/core';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { DarkModeButtonComponent } from '../dark-mode-button.component';
 
 describe('DarkModeButtonComponent', () => {
   let nbThemeService: NbThemeService;

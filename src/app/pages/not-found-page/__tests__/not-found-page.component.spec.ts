@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { provideRouter, Router } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NotFoundPageComponent } from '../not-found-page.component';
-import { RouterTestingHarness } from '@angular/router/testing';
 
 describe('NotFoundPageComponent', () => {
   let router: Router;
