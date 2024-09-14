@@ -8,7 +8,7 @@ import {
   NbSpinnerModule,
 } from '@nebular/theme';
 import { Base64 } from 'js-base64';
-import { AuthService } from '../../core/auth/dsajfajf';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-login-callback-page',

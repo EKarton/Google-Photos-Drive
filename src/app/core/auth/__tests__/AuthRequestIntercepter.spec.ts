@@ -11,7 +11,7 @@ import {
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { of } from 'rxjs';
 import { AuthRequestIntercepter } from '../AuthRequestIntercepter';
-import { AuthService } from '../dsajfajf';
+import { AuthService } from '../Auth.service';
 
 describe('AuthRequestIntercepter', () => {
   const url = 'https://photoslibrary.googleapis.com/v1/sharedAlbums';

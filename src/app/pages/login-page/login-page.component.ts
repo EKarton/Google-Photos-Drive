@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { NbCardModule, NbLayoutModule } from '@nebular/theme';
-import { AuthService } from '../../core/auth/dsajfajf';
+import { AuthService } from '../../core/auth/Auth.service';
 
 @Component({
   selector: 'app-login-page',

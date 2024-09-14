@@ -7,7 +7,7 @@ import { Component, importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { Base64 } from 'js-base64';
-import { AuthService } from '../../../core/auth/dsajfajf';
+import { AuthService } from '../../../core/auth/Auth.service';
 import { LoginCallbackPageComponent } from '../login-callback-page.component';
 
 @Component({
