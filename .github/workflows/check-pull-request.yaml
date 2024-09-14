@@ -1,0 +1,66 @@
+##################################################################
+# A Github action used to check pull requests
+# More info at https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+##################################################################
+
+name: Check the pull request automatically
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-linting:
+    name: Checks for linting errors
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies and angular
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+  run-tests:
+    name: Runs all tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies and angular
+        run: npm ci
+
+      - name: Run all test cases
+        run: npm run test -- --watch=false --no-progress --browsers=ChromeHeadless --code-coverage
+
+  build:
+    name: Builds the app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies and angular
+        run: npm ci
+
+      - name: Build the app
+        run: npm run build
