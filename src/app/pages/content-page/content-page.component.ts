@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NbLayoutModule } from '@nebular/theme';
 import { Base64 } from 'js-base64';
-import { filter, first, switchMap } from 'rxjs/operators';
+import { filter, first, switchMap, take, toArray } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -49,6 +49,7 @@ export class ContentPageComponent implements OnInit {
 
   constructor(
     private treeRepositoryService: TreeRepositoryService,
+    private mediaItemsRepositoryService: MediaItemsRepositoryService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -72,7 +73,9 @@ export class ContentPageComponent implements OnInit {
         filter((treeNode) => treeNode !== null),
         first(),
         switchMap((treeNode) => {
-          return treeNode.photos;
+          return this.mediaItemsRepositoryService
+            .getMediaItemsStream(treeNode.albumId)
+            .pipe(take(35), toArray());
         })
       );
 
