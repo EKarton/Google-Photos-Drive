@@ -26,8 +26,8 @@ export class DarkModeButtonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.themeService.onThemeChange().subscribe((theme: string) => {
-      this.theme = theme;
+    this.themeService.onThemeChange().subscribe((theme) => {
+      this.theme = theme.name;
     });
   }
 
