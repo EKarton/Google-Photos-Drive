@@ -6,12 +6,12 @@ Do you have a lot of albums on Google Photos that is hard to search through? Wis
 
 ## Features
 
-[x] View your albums like a directory
-[x] View all of your photos in an album
-[ ] Add new nested albums
-[ ] Rename existing albums
-[ ] Add photos to an album
-[ ] Remove photos from an album
+- [x] View your albums like a directory
+- [x] View all of your photos in an album
+- [ ] Add new nested albums
+- [ ] Rename existing albums
+- [ ] Add photos to an album
+- [ ] Remove photos from an album
 
 ## Walkthrough
 
