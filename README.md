@@ -21,7 +21,7 @@ Do you have a lot of albums on Google Photos that is hard to search through? Wis
 
 2. Next, create an OAuth2 client from Google Cloud for free by following the doc [here]()
 
-3. Add your client ID, client secrets, and the client redirect uri in a `.env` file like this:
+3. Then, create a `.env` file in the root of this project, and add your client ID, client secrets, and the client redirect uri the file like this:
 
     ```.env
     NG_APP_GOOGLE_CLIENT_ID=<Your Google OAuth2 Client ID>
@@ -29,7 +29,7 @@ Do you have a lot of albums on Google Photos that is hard to search through? Wis
     NG_APP_GOOGLE_REDIRECT_URL=<Your Google OAuth2 Client Redirect Uri>
     ```
 
-4. Then, run `ng serve`. You can access the webpage at <http://localhost:4200>.
+4. Finally, run `ng serve`. You can access the webpage at <http://localhost:4200>.
 
 ## Useful Scripts for Local Development
 
