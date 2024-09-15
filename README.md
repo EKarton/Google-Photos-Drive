@@ -1,5 +1,7 @@
 # Google Photos Drive
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/8f40be5e-e519-445d-acde-ab30d2209d7b/deploy-status)](https://app.netlify.com/sites/googlephotosdrive/deploys)
+
 ## Description
 
 Do you have a lot of albums on Google Photos that is hard to search through? Wish you can view your albums like a directory? Now you can! With this web app, you can view your albums and photos like a directory!
