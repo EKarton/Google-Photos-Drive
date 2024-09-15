@@ -6,6 +6,8 @@
 
 Do you have a lot of albums on Google Photos that is hard to search through? Wish you can view your albums like a directory? Now you can! With this web app, you can view your albums and photos like a directory!
 
+If your albums are named with a `/` (like `Archives/Photos/2010`, `Archives/Photos/2009`), you can navigate through your albums like a directory, starting with `Archives` at the top, and drilling down to `2010` or `2009`.
+
 ## Features
 
 - [x] View your albums like a directory
