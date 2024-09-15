@@ -17,11 +17,19 @@ Do you have a lot of albums on Google Photos that is hard to search through? Wis
 
 ## Walkthrough
 
+Refer to this doc for a detailed walkthrough. However, here are a few screenshots:
+
+![image-1](./docs/home/images/image-1.png)
+
+![image-2](./docs/home/images/image-2.png)
+
+![image-3](./docs/home/images/image-3.png)
+
 ## Setup / Getting Started
 
 1. Install dependencies by running `npm install`
 
-2. Next, create an OAuth2 client from Google Cloud for free by following the doc [here]()
+2. Next, create an OAuth2 client from Google Cloud for free by following the doc [here](./docs/setting-up-oauth2/README.md)
 
 3. Then, create a `.env` file in the root of this project, and add your client ID, client secrets, and the client redirect uri the file like this:
 
