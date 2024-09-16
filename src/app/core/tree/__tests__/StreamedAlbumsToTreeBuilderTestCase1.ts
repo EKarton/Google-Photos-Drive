@@ -52,7 +52,7 @@ export const expectedTree: TreeNode = {
   numPhotos: 0,
   totalMediaItemsCount: 0,
   totalAlbumsCount: 0,
-  isAlbum: false,
+  isAlbum: true,
   childNodes: [
     {
       id: 'mocked-uuid-value',
