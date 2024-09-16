@@ -6,8 +6,12 @@
     <app-path-breadcrumbs class="content-page__breadcrumbs" [path]="path" />
     @if (treeNode && treeNode.childNodes.length > 0) {
     <app-albums-section [albums]="treeNode.childNodes" [path]="path" />
-    } @if (photos && photos.length > 0) {
-    <app-photos-section [photos]="photos" />
+    } @if (treeNode && photosAlbumUrl && photos && photos.length > 0) {
+    <app-photos-section
+      [photos]="photos"
+      [photosAlbumUrl]="photosAlbumUrl"
+      [numPhotosLeft]="numPhotosLeftToDisplay"
+    />
     }
   </nb-layout-column>
 </nb-layout>
