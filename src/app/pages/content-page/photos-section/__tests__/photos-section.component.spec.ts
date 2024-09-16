@@ -4,12 +4,20 @@ import { PhotosSectionComponent } from '../photos-section.component';
 import { MediaItem } from '../../../../core/media-items/MediaItems';
 
 describe('PhotosSectionComponent', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockWindow: jasmine.SpyObj<any>;
+
   let component: PhotosSectionComponent;
   let fixture: ComponentFixture<PhotosSectionComponent>;
 
   beforeEach(async () => {
+    mockWindow = jasmine.createSpyObj({
+      open: jasmine.createSpy(),
+    });
+
     await TestBed.configureTestingModule({
       imports: [PhotosSectionComponent],
+      providers: [{ provide: 'Window', useValue: mockWindow }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhotosSectionComponent);
@@ -34,7 +42,15 @@ describe('PhotosSectionComponent', () => {
     );
   });
 
-  it('should navigate to url when user clicks on a photo', () => {});
+  it('should navigate to url when user clicks on a photo', () => {
+    fixture.nativeElement.querySelector('img').click();
+
+    expect(mockWindow.open).toHaveBeenCalledWith(
+      'https://photos.google.com/photos/photo1',
+      '_blank',
+      'noopener,noreferrer'
+    );
+  });
 });
 
 const mediaItems: MediaItem[] = [
