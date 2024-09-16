@@ -96,12 +96,16 @@ export class ContentPageComponent implements OnInit {
   }
 
   private handleObservableError(err: HttpErrorResponse) {
-    console.error('ERROR' + err);
-
     if (err.status === 401 || err.status === 400) {
-      this.router.navigateByUrl('/auth/login');
+      this.router
+        .navigateByUrl('/auth/login')
+        .then(() => console.log('Navigated to login page'))
+        .catch((err) => console.error('Failed to navigate to login page', err));
     } else {
-      this.router.navigateByUrl('/400');
+      this.router
+        .navigateByUrl('/404')
+        .then(() => console.log('Navigated to 404 page'))
+        .catch((err) => console.error('Failed to navigate to 404 page', err));
     }
   }
 }
