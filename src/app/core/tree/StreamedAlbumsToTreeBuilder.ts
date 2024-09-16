@@ -20,7 +20,7 @@ export default class StreamedAlbumsToTreeBuilder {
       totalAlbumsCount: 0,
       childNodes: [],
       numPhotos: 0,
-      isAlbum: false,
+      isAlbum: true,
       albumId: undefined,
     };
 
