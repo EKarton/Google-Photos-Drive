@@ -45,12 +45,7 @@ export class LoginCallbackPageComponent implements OnInit {
         this.isSuccessful = true;
 
         setTimeout(() => {
-          this.router
-            .navigateByUrl(`/content/${Base64.encode('Home')}`)
-            .then(() => console.log('Navigated to content page'))
-            .catch((err) =>
-              console.error(`Failed to navigate to content page: ${err}`)
-            );
+          this.router.navigateByUrl(`/content/${Base64.encode('Home')}`);
         }, 1500);
       },
       error: (err) => {

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PhotosSectionComponent } from '../photos-section.component';
 import { MediaItem } from '../../../../core/media-items/MediaItems';
+import { PhotosSectionComponent } from '../photos-section.component';
 
 describe('PhotosSectionComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

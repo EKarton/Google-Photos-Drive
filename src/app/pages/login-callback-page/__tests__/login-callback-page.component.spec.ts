@@ -34,6 +34,10 @@ describe('LoginCallbackComponent', () => {
         },
         provideRouter([
           {
+            path: '',
+            component: TestEmptyComponent,
+          },
+          {
             path: 'auth/login/callback',
             component: LoginCallbackPageComponent,
           },
@@ -95,5 +99,24 @@ describe('LoginCallbackComponent', () => {
     expect(component).toBeTruthy();
     const element = fixture.nativeElement.querySelector('nb-card-header');
     expect(element.textContent).toEqual('Login Failed');
+  });
+
+  it('should redirect user to the home page, given it shows the error page and user clicks on the button', async () => {
+    authServiceMock.exchangeCodeWithTokens.and.returnValue(
+      throwError(() => new Error('Invalid state / code'))
+    );
+    const harness = await RouterTestingHarness.create();
+    const fixture = harness.fixture;
+    await harness.navigateByUrl(
+      'auth/login/callback?code=123&state=abc',
+      LoginCallbackPageComponent
+    );
+    harness.detectChanges();
+
+    fixture.nativeElement.querySelector('button').click();
+
+    const lastRouterEvent = await firstValueFrom(router.events);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((lastRouterEvent as any).url).toEqual('/');
   });
 });

@@ -32,7 +32,9 @@ export class PathBreadcrumbsComponent {
       const redirectPath = prevPath ? `${prevPath}/${pathPart}` : pathPart;
       const breadcrumb = {
         label: pathPart,
-        onClick: this.createOnClickForBreadcrumb(redirectPath),
+        onClick: () => {
+          this.router.navigate(['/content', Base64.encode(redirectPath)]);
+        },
         isDisabled: i === pathParts.length - 1,
       };
 
@@ -41,18 +43,5 @@ export class PathBreadcrumbsComponent {
     }
 
     return breadcrumbs;
-  }
-
-  private createOnClickForBreadcrumb(redirectPath: string) {
-    return () => {
-      this.router
-        .navigate(['/content', Base64.encode(redirectPath)])
-        .then(() => console.log(`Navigated to ${redirectPath} from breadcrumb`))
-        .catch((err) =>
-          console.error(
-            `Failed to navigate to ${redirectPath} from breadcrumb: ${err}`
-          )
-        );
-    };
   }
 }

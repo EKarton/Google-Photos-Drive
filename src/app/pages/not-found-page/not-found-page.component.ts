@@ -18,9 +18,6 @@ export class NotFoundPageComponent {
   constructor(private router: Router) {}
 
   handleHomePageButtonClick() {
-    this.router
-      .navigate(['/'])
-      .then(() => console.log('Navigated home'))
-      .catch((err) => console.error(`Failed to navigate home: ${err}`));
+    this.router.navigate(['/']);
   }
 }
