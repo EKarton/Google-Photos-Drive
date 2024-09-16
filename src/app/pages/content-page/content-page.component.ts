@@ -63,7 +63,7 @@ export class ContentPageComponent implements OnInit {
         this.path = Base64.decode(params.get('pathId')!);
       } catch (err) {
         console.error('Error while parsing path from url', err);
-        this.router.navigateByUrl('/500');
+        this.router.navigateByUrl('/404');
         return;
       }
 

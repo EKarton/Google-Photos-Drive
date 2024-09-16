@@ -131,6 +131,13 @@ describe('TreeRepositoryService', () => {
       expect(tree).toBeNull();
     });
 
+    it('should return null, given a title prefix matches but not in the tree', async () => {
+      const flow = service.getTreeNodeFromTitlePrefix('Archives/Random album');
+      const tree = await lastValueFrom(flow);
+
+      expect(tree).toBeNull();
+    });
+
     it('should return the entire tree, given no prefix', async () => {
       const flow = service.getTreeNodeFromTitlePrefix();
       const tree = await lastValueFrom(flow);

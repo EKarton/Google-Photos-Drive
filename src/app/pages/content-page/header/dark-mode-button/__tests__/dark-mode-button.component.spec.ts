@@ -59,5 +59,29 @@ describe('DarkModeButtonComponent', () => {
       expect(component.theme).toEqual(currentTheme);
       expect(element.getAttribute('icon')).toEqual(expectedIconValue);
     });
+
+    [
+      {
+        currentTheme: 'dark',
+        newTheme: 'cosmic',
+      },
+      {
+        currentTheme: 'cosmic',
+        newTheme: 'corporate',
+      },
+      {
+        currentTheme: 'corporate',
+        newTheme: 'dark',
+      },
+    ].forEach(({ currentTheme, newTheme }) => {
+      it(`should change theme to ${newTheme} when user clicks on the button, given current theme is ${currentTheme}`, () => {
+        nbThemeService.changeTheme(currentTheme);
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button').click();
+
+        expect(nbThemeService.currentTheme).toEqual(newTheme);
+      });
+    });
   });
 });

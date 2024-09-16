@@ -46,6 +46,7 @@ describe('ContentPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [ContentPageComponent],
       providers: [
+        { provide: 'Window', useValue: window },
         provideRouter([
           {
             path: 'content/:pathId',

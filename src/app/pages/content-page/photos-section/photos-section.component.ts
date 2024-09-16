@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { MediaItem } from '../../../core/media-items/MediaItems';
 import { PhotoCardComponent } from '../../../components/photo-card/photo-card.component';
 import { ComponentsModule } from '../../../components/components.module';
@@ -13,7 +13,9 @@ import { ComponentsModule } from '../../../components/components.module';
 export class PhotosSectionComponent {
   @Input() photos!: MediaItem[];
 
+  constructor(@Inject('Window') private window: Window) {}
+
   handlePhotoClick(photo: MediaItem) {
-    window.open(photo.productUrl, '_blank', 'noopener,noreferrer');
+    this.window.open(photo.productUrl, '_blank', 'noopener,noreferrer');
   }
 }

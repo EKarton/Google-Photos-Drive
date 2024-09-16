@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/Auth.service';
 import { HttpClient } from '@angular/common/http';
-import { EMPTY, expand, Observable, scan, throwError } from 'rxjs';
+import { EMPTY, expand, Observable, scan } from 'rxjs';
 import {
   Album,
   AlbumsPagedResponse,
@@ -13,9 +13,6 @@ import {
  */
 @Injectable()
 export class AlbumsRequestService {
-  private hehe = new Set<string>();
-  private haha = new Set<string>();
-
   constructor(
     private authService: AuthService,
     private httpClient: HttpClient
@@ -46,11 +43,6 @@ export class AlbumsRequestService {
     const headers = {
       Authorization: `Bearer ${this.authService.getAccessToken()}`,
     };
-
-    if (this.hehe.has(pageToken ?? '')) {
-      return throwError(() => new Error('Token hehe already found'));
-    }
-    this.hehe.add(pageToken ?? '');
 
     const baseParams = { excludeNonAppCreatedData: 'false' };
     const params = pageToken ? { ...baseParams, pageToken } : baseParams;
@@ -86,11 +78,6 @@ export class AlbumsRequestService {
     const headers = {
       Authorization: `Bearer ${this.authService.getAccessToken()}`,
     };
-
-    if (this.haha.has(pageToken ?? '')) {
-      return throwError(() => new Error('Token haha already found'));
-    }
-    this.haha.add(pageToken ?? '');
 
     const baseParams = { excludeNonAppCreatedData: 'false' };
     const params = pageToken ? { ...baseParams, pageToken } : baseParams;
