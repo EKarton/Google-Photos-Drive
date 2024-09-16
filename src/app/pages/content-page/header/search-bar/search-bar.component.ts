@@ -48,7 +48,7 @@ export class SearchBarComponent implements OnInit {
         if (err.status === 401 || err.status === 400) {
           this.router.navigateByUrl('/auth/login');
         } else {
-          this.router.navigateByUrl('/400');
+          this.router.navigateByUrl('/404');
         }
       },
     });
