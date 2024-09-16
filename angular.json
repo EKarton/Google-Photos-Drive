@@ -101,7 +101,11 @@
               "node_modules/@nebular/theme/styles/prebuilt/dark.css",
               "node_modules/@nebular/theme/styles/prebuilt/cosmic.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "codeCoverageExclude": [
+              "src/app/**/*.spec.ts",
+              "src/**/__tests__/**/*"
+            ]
           }
         },
         "lint": {

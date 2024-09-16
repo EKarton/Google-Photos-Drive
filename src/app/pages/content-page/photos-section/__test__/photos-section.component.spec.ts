@@ -33,6 +33,8 @@ describe('PhotosSectionComponent', () => {
       'https://photos.google.com/thumbnails/photo3'
     );
   });
+
+  it('should navigate to url when user clicks on a photo', () => {});
 });
 
 const mediaItems: MediaItem[] = [
