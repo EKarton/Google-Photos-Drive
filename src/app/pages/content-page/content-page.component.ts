@@ -83,25 +83,29 @@ export class ContentPageComponent implements OnInit {
         next: (treeNode) => {
           this.treeNode = treeNode;
         },
-        error: this.handleObservableError,
+        error: (err) => this.handleObservableError,
       });
 
       photosPipe.subscribe({
         next: (photos) => {
           this.photos = photos;
         },
-        error: this.handleObservableError,
+        error: (err) => this.handleObservableError,
       });
     });
   }
 
   private handleObservableError(err: HttpErrorResponse) {
-    console.error('ERROR' + err);
-
     if (err.status === 401 || err.status === 400) {
-      this.router.navigateByUrl('/auth/login');
+      this.router
+        .navigateByUrl('/auth/login')
+        .then(() => console.log('Navigated to login page'))
+        .catch((err) => console.error('Failed to navigate to login page', err));
     } else {
-      this.router.navigateByUrl('/400');
+      this.router
+        .navigateByUrl('/404')
+        .then(() => console.log('Navigated to 404 page'))
+        .catch((err) => console.error('Failed to navigate to 404 page', err));
     }
   }
 }
