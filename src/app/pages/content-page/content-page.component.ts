@@ -83,14 +83,14 @@ export class ContentPageComponent implements OnInit {
         next: (treeNode) => {
           this.treeNode = treeNode;
         },
-        error: (err) => this.handleObservableError,
+        error: this.handleObservableError,
       });
 
       photosPipe.subscribe({
         next: (photos) => {
           this.photos = photos;
         },
-        error: (err) => this.handleObservableError,
+        error: this.handleObservableError,
       });
     });
   }
