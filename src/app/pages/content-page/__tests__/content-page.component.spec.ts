@@ -103,7 +103,7 @@ describe('ContentPageComponent', () => {
     expect(archivesAlbumElement).not.toBeNull();
     expect(unlabeledAlbumElement).not.toBeNull();
 
-    // Assert that the photos exist
+    // Assert that the photos do exist
     const photoElements =
       fixture.nativeElement.querySelectorAll('.photo-card > img');
     const photoNames = mockMediaItems.map((m) => m.filename!);
@@ -114,6 +114,31 @@ describe('ContentPageComponent', () => {
       );
       expect(foundElement).not.toBeNull();
     }
+  });
+
+  it('should only render photos in the current album', async () => {
+    await TestBed.compileComponents();
+    const harness = await RouterTestingHarness.create();
+    const fixture = harness.fixture;
+    await harness.navigateByUrl(
+      `/content/${encodeURIComponent(Base64.encode('Home/Archives'))}`,
+      ContentPageComponent
+    );
+    harness.detectChanges();
+
+    expect(fixture.componentInstance).toBeTruthy();
+
+    // Assert that the next album exist
+    const albumElements = fixture.nativeElement.querySelectorAll(
+      '.album-card__details'
+    );
+    expect(albumElements.length).toEqual(1);
+    expect(albumElements[0].textContent.includes('Photos'));
+
+    // Assert that no photos exist
+    const photoElements =
+      fixture.nativeElement.querySelectorAll('.photo-card > img');
+    expect(photoElements.length).toEqual(0);
   });
 });
 

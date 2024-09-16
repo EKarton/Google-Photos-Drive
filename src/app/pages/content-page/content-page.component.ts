@@ -16,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
 import { PathBreadcrumbsComponent } from './path-breadcrumbs/path-breadcrumbs.component';
 import { PhotosSectionComponent } from './photos-section/photos-section.component';
 import { AlbumsSectionComponent } from './albums-section/albums-section.component';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-content-page',
@@ -73,6 +74,10 @@ export class ContentPageComponent implements OnInit {
         filter((treeNode) => treeNode !== null),
         first(),
         switchMap((treeNode) => {
+          if (!treeNode.isAlbum) {
+            return of(null);
+          }
+
           return this.mediaItemsRepositoryService
             .getMediaItemsStream(treeNode.albumId)
             .pipe(take(35), toArray());
