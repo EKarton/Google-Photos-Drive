@@ -11,4 +11,5 @@ export interface TreeNode {
   numPhotos: number;
   isAlbum: boolean;
   albumId?: string;
+  albumGooglePhotosLink?: string;
 }

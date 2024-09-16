@@ -74,6 +74,7 @@ export default class StreamedAlbumsToTreeBuilder {
         curNode.coverPhotoBaseUrls = [album.coverPhotoBaseUrl];
         curNode.isAlbum = true;
         curNode.albumId = album.id;
+        curNode.albumGooglePhotosLink = album.productUrl;
 
         return rootNode;
       }, rootTreeNode)
