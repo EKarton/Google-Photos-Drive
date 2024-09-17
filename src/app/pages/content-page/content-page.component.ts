@@ -45,7 +45,11 @@ import { of } from 'rxjs';
 })
 export class ContentPageComponent implements OnInit {
   treeNode: TreeNode | null = null;
+
   photos: MediaItem[] | null = null;
+  numPhotosLeftToDisplay: number | null = null;
+  photosAlbumUrl: string | null = null;
+
   path!: string;
 
   constructor(
@@ -94,6 +98,19 @@ export class ContentPageComponent implements OnInit {
       photosPipe.subscribe({
         next: (photos) => {
           this.photos = photos;
+
+          if (this.treeNode && photos) {
+            this.numPhotosLeftToDisplay = Math.max(
+              0,
+              this.treeNode.numPhotos - photos.length
+            );
+          }
+
+          if (this.treeNode && this.treeNode.isAlbum) {
+            this.photosAlbumUrl =
+              this.treeNode.albumGooglePhotosLink ??
+              'https://photos.google.com';
+          }
         },
         error: this.handleObservableError,
       });

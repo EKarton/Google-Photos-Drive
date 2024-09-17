@@ -9,4 +9,14 @@
     />
     }
   </div>
+
+  <div class="photos-section__more-photos-container">
+    <button nbButton status="basic" (click)="handleMorePhotosClick()">
+      @if (numPhotosLeft && numPhotosLeft > 0) {
+        Show more photos ({{numPhotosLeft}}+)
+      } @else {
+        Show more photos
+      }
+    </button>
+  </div>
 </div>

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MediaItem } from '../../../../core/media-items/MediaItems';
 import { PhotosSectionComponent } from '../photos-section.component';
+import { importProvidersFrom } from '@angular/core';
+import { NbThemeModule } from '@nebular/theme';
 
 describe('PhotosSectionComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,12 +18,17 @@ describe('PhotosSectionComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [PhotosSectionComponent],
-      providers: [{ provide: 'Window', useValue: mockWindow }],
+      providers: [
+        { provide: 'Window', useValue: mockWindow },
+        importProvidersFrom(NbThemeModule.forRoot({ name: 'default' })),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PhotosSectionComponent);
     component = fixture.componentInstance;
     component.photos = mediaItems;
+    component.numPhotosLeft = 45;
+    component.photosAlbumUrl = 'https://photos.google.com';
     fixture.detectChanges();
   });
 
@@ -46,6 +53,18 @@ describe('PhotosSectionComponent', () => {
 
     expect(mockWindow.open).toHaveBeenCalledWith(
       'https://photos.google.com/photos/photo1',
+      '_blank',
+      'noopener,noreferrer'
+    );
+  });
+
+  it('should navigate to photos album link when user clicks on the more photos button', () => {
+    fixture.nativeElement
+      .querySelector('.photos-section__more-photos-container > button')
+      .click();
+
+    expect(mockWindow.open).toHaveBeenCalledWith(
+      'https://photos.google.com',
       '_blank',
       'noopener,noreferrer'
     );
