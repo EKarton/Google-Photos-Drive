@@ -8,6 +8,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbThemeModule } from '@nebular/theme';
 import { routes } from './app.routes';
@@ -20,5 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     importProvidersFrom(NbThemeModule.forRoot({ name: 'default' })),
     importProvidersFrom(NbEvaIconsModule),
+    provideAnimations(),
   ],
 };

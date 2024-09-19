@@ -1,8 +1,11 @@
 <div class="photo-card">
   <img
+    masonryLazy
     class="photo-card__image"
     [src]="imgSrc"
-    loading="lazy"
     alt="imgName + ' image'"
+    loading="lazy"
+    [attr.width]="width"
+    [attr.height]="height"
   />
 </div>

@@ -4,10 +4,21 @@
   }
 
   &__cards-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 15rem);
-    grid-template-rows: auto;
-    gap: 2.5rem;
+    max-width: 100vw;
+    margin: 0 auto;
+  }
+
+  &__photo-card {
+    display: inline-block;
+    width: 200px;
+    margin-bottom: 2.5rem;
+  }
+
+  &__image {
+    border-radius: 1rem;
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 20%);
+    max-width: 100%;
+    height: auto;
   }
 
   &__more-photos-container {

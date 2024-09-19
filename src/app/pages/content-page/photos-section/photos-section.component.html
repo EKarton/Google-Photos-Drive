@@ -1,22 +1,27 @@
 <div>
   <h5 class="photos-section__header">Photos</h5>
-  <div class="photos-section__cards-list">
-    @for (photo of photos; track photo.id) {
+
+  <ngx-masonry
+    class="photos-section__cards-list"
+    [options]="masonryOptions"
+    [ordered]="true"
+  >
+    @for (photo of photos; track photo.mediaItem.id) {
     <app-photo-card
-      [imgSrc]="photo.baseUrl"
-      [imgName]="photo.filename ?? ''"
+      ngxMasonryItem
+      class="photo-section__image-card"
+      [imgSrc]="photo.mediaItem.baseUrl"
+      [imgName]="photo.mediaItem.filename ?? ''"
+      [width]="photo.width"
+      [height]="photo.height"
       (click)="handlePhotoClick(photo)"
     />
     }
-  </div>
+  </ngx-masonry>
 
   <div class="photos-section__more-photos-container">
     <button nbButton status="basic" (click)="handleMorePhotosClick()">
-      @if (numPhotosLeft && numPhotosLeft > 0) {
-        Show more photos ({{numPhotosLeft}}+)
-      } @else {
-        Show more photos
-      }
+      Show more photos
     </button>
   </div>
 </div>

@@ -3,7 +3,6 @@ import { HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbLayoutModule } from '@nebular/theme';
 import { Base64 } from 'js-base64';
-import { filter, first, switchMap, take, toArray } from 'rxjs/operators';
 import { AlbumsRepositoryService } from '../../core/albums/AlbumsRepository.service';
 import { AuthRequestIntercepter } from '../../core/auth/AuthRequestIntercepter';
 import { AlbumsRequestService } from '../../core/albums/AlbumsRequest.service';
@@ -11,12 +10,10 @@ import { TreeRepositoryService } from '../../core/tree/TreeRepository.service';
 import { MediaItemsRepositoryService } from '../../core/media-items/MediaItemsRepository.service';
 import { TreeNode } from '../../core/tree/TreeNode';
 import { MediaItemsRequestService } from '../../core/media-items/MediaItemsRequest.service';
-import { MediaItem } from '../../core/media-items/MediaItems';
 import { HeaderComponent } from './header/header.component';
 import { PathBreadcrumbsComponent } from './path-breadcrumbs/path-breadcrumbs.component';
 import { PhotosSectionComponent } from './photos-section/photos-section.component';
 import { AlbumsSectionComponent } from './albums-section/albums-section.component';
-import { of } from 'rxjs';
 
 @Component({
   selector: 'app-content-page',
@@ -45,16 +42,10 @@ import { of } from 'rxjs';
 })
 export class ContentPageComponent implements OnInit {
   treeNode: TreeNode | null = null;
-
-  photos: MediaItem[] | null = null;
-  numPhotosLeftToDisplay: number | null = null;
-  photosAlbumUrl: string | null = null;
-
   path!: string;
 
   constructor(
     private treeRepositoryService: TreeRepositoryService,
-    private mediaItemsRepositoryService: MediaItemsRepositoryService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -62,7 +53,6 @@ export class ContentPageComponent implements OnInit {
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.treeNode = null;
-      this.photos = null;
 
       try {
         this.path = Base64.decode(params.get('pathId')!);
@@ -72,48 +62,14 @@ export class ContentPageComponent implements OnInit {
         return;
       }
 
-      const treeNodePipe =
-        this.treeRepositoryService.getTreeNodeFromTitlePrefix(this.path);
-      const photosPipe = treeNodePipe.pipe(
-        filter((treeNode) => treeNode !== null),
-        first(),
-        switchMap((treeNode) => {
-          if (!treeNode.isAlbum) {
-            return of(null);
-          }
-
-          return this.mediaItemsRepositoryService
-            .getMediaItemsStream(treeNode.albumId)
-            .pipe(take(35), toArray());
-        })
-      );
-
-      treeNodePipe.subscribe({
-        next: (treeNode) => {
-          this.treeNode = treeNode;
-        },
-        error: this.handleObservableError,
-      });
-
-      photosPipe.subscribe({
-        next: (photos) => {
-          this.photos = photos;
-
-          if (this.treeNode && photos) {
-            this.numPhotosLeftToDisplay = Math.max(
-              0,
-              this.treeNode.numPhotos - photos.length
-            );
-          }
-
-          if (this.treeNode && this.treeNode.isAlbum) {
-            this.photosAlbumUrl =
-              this.treeNode.albumGooglePhotosLink ??
-              'https://photos.google.com';
-          }
-        },
-        error: this.handleObservableError,
-      });
+      this.treeRepositoryService
+        .getTreeNodeFromTitlePrefix(this.path)
+        .subscribe({
+          next: (treeNode) => {
+            this.treeNode = treeNode;
+          },
+          error: this.handleObservableError,
+        });
     });
   }
 
