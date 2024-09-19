@@ -76,11 +76,11 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
 
           const newImageCardItems: ImageCardItem[] = data.mediaItems.map(
             (item) => {
-              const width = 200;
-              const height =
-                (Number(item.mediaMetadata.height) /
-                  Number(item.mediaMetadata.width)) *
-                200;
+              const imageWidth = Number(item.mediaMetadata.width);
+              const imageHeight = Number(item.mediaMetadata.height);
+              const isLandscape = imageWidth > imageHeight;
+              const width = isLandscape ? 440 : 200;
+              const height = (imageHeight / imageWidth) * width;
 
               return {
                 width: `${width}px`,
