@@ -3,8 +3,9 @@
     <app-header class="content-page__header" />
   </nb-layout-header>
   <nb-layout-column>
+    @if (path) {
     <app-path-breadcrumbs class="content-page__breadcrumbs" [path]="path" />
-    @if (treeNode && treeNode.childNodes.length > 0) {
+    } @if (treeNode && treeNode.childNodes.length > 0) {
     <app-albums-section [albums]="treeNode.childNodes" [path]="path" />
     } @if (treeNode && treeNode.isAlbum) {
     <app-photos-section [gAlbumId]="treeNode.albumId" />

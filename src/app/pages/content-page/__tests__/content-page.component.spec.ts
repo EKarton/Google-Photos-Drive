@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { provideLocationMocks } from '@angular/common/testing';
 import { Component, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Base64 } from 'js-base64';
 import { Album } from '../../../core/albums/Albums';
@@ -14,6 +14,7 @@ import { AuthService } from '../../../core/auth/Auth.service';
 import { ContentPageComponent } from '../content-page.component';
 import { MediaItemsRequestService } from '../../../core/media-items/MediaItemsRequest.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-test-empty-component',
@@ -25,6 +26,7 @@ describe('ContentPageComponent', () => {
   let mockAlbumsRepositoryService: jasmine.SpyObj<AlbumsRepositoryService>;
   let mockMediaItemsRequestService: jasmine.SpyObj<MediaItemsRequestService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let router: Router;
 
   beforeEach(async () => {
     mockAlbumsRepositoryService = jasmine.createSpyObj(
@@ -74,6 +76,8 @@ describe('ContentPageComponent', () => {
       useValue: mockMediaItemsRequestService,
     });
     TestBed.overrideProvider(AuthService, { useValue: mockAuthService });
+
+    router = TestBed.inject(Router);
   });
 
   it('should render albums and photos', async () => {
@@ -139,6 +143,45 @@ describe('ContentPageComponent', () => {
     const photoElements =
       fixture.nativeElement.querySelectorAll('.photo-card > img');
     expect(photoElements.length).toEqual(0);
+  });
+
+  it('should take user to 404 page if it cannot parse the pathId', async () => {
+    await TestBed.compileComponents();
+    const harness = await RouterTestingHarness.create();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const events: any[] = [];
+    router.events.subscribe((event) => events.push(event));
+    await harness.navigateByUrl('/content/****', ContentPageComponent);
+    harness.detectChanges();
+
+    expect(events[events.length - 1].url).toEqual('/404');
+  });
+
+  [
+    { errorCode: 401, expectedRedirect: '/auth/login' },
+    { errorCode: 400, expectedRedirect: '/auth/login' },
+    { errorCode: 500, expectedRedirect: '/404' },
+  ].forEach(({ errorCode, expectedRedirect }) => {
+    it(`should take user to ${expectedRedirect} page if it encounters a ${errorCode} error`, async () => {
+      mockAlbumsRepositoryService.getAllAlbumsStream.and.returnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({ status: errorCode, statusText: 'Error' })
+        )
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const events: any[] = [];
+      router.events.subscribe((event) => events.push(event));
+      await TestBed.compileComponents();
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl(
+        `/content/${encodeURIComponent(Base64.encode('Home/Archives'))}`,
+        ContentPageComponent
+      );
+      harness.detectChanges();
+
+      expect(events[events.length - 1].url).toEqual(expectedRedirect);
+    });
   });
 });
 

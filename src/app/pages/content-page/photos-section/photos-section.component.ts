@@ -100,7 +100,13 @@ export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
           this.masonry?.reloadItems();
           this.masonry?.layout();
         },
-        error: this.handleObservableError,
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 401 || err.status === 400) {
+            this.router.navigateByUrl('/auth/login');
+          } else {
+            this.router.navigateByUrl('/404');
+          }
+        },
       });
   }
 
@@ -125,24 +131,6 @@ export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
   handleMorePhotosClick() {
     if (this.hasPhotosToFetch) {
       this.fetchMediaItemsPageRequests$.next(this.lastPageToken);
-    }
-  }
-
-  itemsLoaded() {
-    console.error('itemsLoaded()');
-  }
-
-  private handleObservableError(err: HttpErrorResponse) {
-    if (err.status === 401 || err.status === 400) {
-      this.router
-        .navigateByUrl('/auth/login')
-        .then(() => console.log('Navigated to login page'))
-        .catch((err) => console.error('Failed to navigate to login page', err));
-    } else {
-      this.router
-        .navigateByUrl('/404')
-        .then(() => console.log('Navigated to 404 page'))
-        .catch((err) => console.error('Failed to navigate to 404 page', err));
     }
   }
 }

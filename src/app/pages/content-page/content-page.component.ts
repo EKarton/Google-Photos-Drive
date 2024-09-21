@@ -42,7 +42,7 @@ import { AlbumsSectionComponent } from './albums-section/albums-section.componen
 })
 export class ContentPageComponent implements OnInit {
   treeNode: TreeNode | null = null;
-  path!: string;
+  path = '';
 
   constructor(
     private treeRepositoryService: TreeRepositoryService,
@@ -52,15 +52,16 @@ export class ContentPageComponent implements OnInit {
 
   async ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      this.treeNode = null;
+      const parsedPath = Base64.decode(params.get('pathId')!);
 
-      try {
-        this.path = Base64.decode(params.get('pathId')!);
-      } catch (err) {
-        console.error('Error while parsing path from url', err);
-        this.router.navigateByUrl('/404');
+      if (!parsedPath) {
+        console.error('Invalid path', this.path);
+        this.router.navigate(['/404']);
         return;
       }
+
+      this.treeNode = null;
+      this.path = parsedPath;
 
       this.treeRepositoryService
         .getTreeNodeFromTitlePrefix(this.path)
@@ -68,22 +69,14 @@ export class ContentPageComponent implements OnInit {
           next: (treeNode) => {
             this.treeNode = treeNode;
           },
-          error: this.handleObservableError,
+          error: (err: HttpErrorResponse) => {
+            if (err.status === 401 || err.status === 400) {
+              this.router.navigate(['/auth/login']);
+            } else {
+              this.router.navigate(['/404']);
+            }
+          },
         });
     });
-  }
-
-  private handleObservableError(err: HttpErrorResponse) {
-    if (err.status === 401 || err.status === 400) {
-      this.router
-        .navigateByUrl('/auth/login')
-        .then(() => console.log('Navigated to login page'))
-        .catch((err) => console.error('Failed to navigate to login page', err));
-    } else {
-      this.router
-        .navigateByUrl('/404')
-        .then(() => console.log('Navigated to 404 page'))
-        .catch((err) => console.error('Failed to navigate to 404 page', err));
-    }
   }
 }

@@ -147,4 +147,10 @@ const mockAlbums: Album[] = [
     coverPhotoBaseUrl: 'https://photos.google.com/albums/album4/cover',
     mediaItemsCount: 4,
   },
+  {
+    id: 'album5',
+    productUrl: 'https://photos.google.com/albums/album5',
+    coverPhotoBaseUrl: 'https://photos.google.com/albums/album5/cover',
+    mediaItemsCount: 4,
+  },
 ];

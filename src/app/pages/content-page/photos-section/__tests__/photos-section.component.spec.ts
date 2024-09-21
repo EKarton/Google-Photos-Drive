@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MediaItemsPagedResponse } from '../../../../core/media-items/MediaItems';
 import { PhotosSectionComponent } from '../photos-section.component';
 import { Component, importProvidersFrom } from '@angular/core';
 import { NbThemeModule } from '@nebular/theme';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { MediaItemsRequestService } from '../../../../core/media-items/MediaItemsRequest.service';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
@@ -19,9 +19,7 @@ describe('PhotosSectionComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockWindow: jasmine.SpyObj<any>;
   let mockMediaItemsRequestService: jasmine.SpyObj<MediaItemsRequestService>;
-
-  let component: PhotosSectionComponent;
-  let fixture: ComponentFixture<PhotosSectionComponent>;
+  let router: Router;
 
   beforeEach(async () => {
     mockWindow = jasmine.createSpyObj({
@@ -81,15 +79,16 @@ describe('PhotosSectionComponent', () => {
       useValue: mockMediaItemsRequestService,
     });
 
-    fixture = TestBed.createComponent(PhotosSectionComponent);
-    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+  });
+
+  it('should render the first page of photos', async () => {
+    const fixture = TestBed.createComponent(PhotosSectionComponent);
+    const component = fixture.componentInstance;
     component.gAlbumId = 'albumId1';
     fixture.detectChanges();
     await fixture.whenStable();
-  });
 
-  it('should render the first page of photos', () => {
-    console.error(fixture.nativeElement);
     expect(component).toBeTruthy();
 
     const elements = fixture.nativeElement.querySelectorAll('img');
@@ -106,13 +105,15 @@ describe('PhotosSectionComponent', () => {
   });
 
   it('should render the first and second page of photos when user clicks on the "Show more photos" button', async () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(PhotosSectionComponent);
+    const component = fixture.componentInstance;
+    component.gAlbumId = 'albumId1';
+    fixture.detectChanges();
+    await fixture.whenStable();
 
     fixture.nativeElement.querySelector('button').click();
     fixture.detectChanges();
     await fixture.whenStable();
-
-    console.error(fixture.nativeElement);
 
     const elements = fixture.nativeElement.querySelectorAll('img');
     expect(elements.length).toEqual(6);
@@ -136,7 +137,13 @@ describe('PhotosSectionComponent', () => {
     );
   });
 
-  it('should navigate to url when user clicks on a photo', () => {
+  it('should navigate to url when user clicks on a photo', async () => {
+    const fixture = TestBed.createComponent(PhotosSectionComponent);
+    const component = fixture.componentInstance;
+    component.gAlbumId = 'albumId1';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
     fixture.nativeElement.querySelector('img').click();
 
     expect(mockWindow.open).toHaveBeenCalledWith(
@@ -144,6 +151,29 @@ describe('PhotosSectionComponent', () => {
       '_blank',
       'noopener,noreferrer'
     );
+  });
+
+  [
+    { errorCode: 401, expectedRedirect: '/auth/login' },
+    { errorCode: 400, expectedRedirect: '/auth/login' },
+    { errorCode: 500, expectedRedirect: '/404' },
+  ].forEach(({ errorCode, expectedRedirect }) => {
+    it(`should take user to ${expectedRedirect} page if it encounters a ${errorCode} error`, async () => {
+      mockMediaItemsRequestService.fetchMediaItemsPage.and.returnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({ status: errorCode, statusText: 'Error' })
+        )
+      );
+      const fixture = TestBed.createComponent(PhotosSectionComponent);
+      const component = fixture.componentInstance;
+      component.gAlbumId = 'albumId1';
+      fixture.detectChanges();
+
+      const lastRouterEvent = await firstValueFrom(router.events);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((lastRouterEvent as any).url).toEqual(expectedRedirect);
+    });
   });
 });
 
