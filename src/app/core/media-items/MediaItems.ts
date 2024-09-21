@@ -9,7 +9,7 @@ export interface MediaItem {
   productUrl: string;
   baseUrl: string;
   mimeType?: string;
-  mediaMetadata: {
+  mediaMetadata?: {
     creationTime: string;
     width: string;
     height: string;

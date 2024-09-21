@@ -4,6 +4,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { MediaItem } from '../../../core/media-items/MediaItems';
@@ -35,9 +36,9 @@ import { MediaItemsRequestService } from '../../../core/media-items/MediaItemsRe
   templateUrl: './photos-section.component.html',
   styleUrl: './photos-section.component.scss',
 })
-export class PhotosSectionComponent implements OnChanges, OnDestroy {
+export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
   @Input({ required: true }) gAlbumId?: string;
-  @ViewChild(NgxMasonryComponent) masonry!: NgxMasonryComponent;
+  @ViewChild(NgxMasonryComponent) masonry?: NgxMasonryComponent;
 
   photos: ImageCardItem[] = [];
   readonly masonryOptions: NgxMasonryOptions = {
@@ -48,6 +49,7 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
   };
 
   private lastPageToken = '';
+  private hasPhotosToFetch = true;
   private fetchMediaItemsPageRequests$ = new BehaviorSubject<string>('');
   private subscription?: Subscription;
 
@@ -57,7 +59,7 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
     private mediaItemsRequestService: MediaItemsRequestService
   ) {}
 
-  ngOnChanges() {
+  ngOnInit() {
     this.lastPageToken = '';
     this.photos = [];
 
@@ -72,12 +74,16 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.lastPageToken = data.nextPageToken;
+          if (!data.nextPageToken) {
+            this.hasPhotosToFetch = false;
+          } else {
+            this.lastPageToken = data.nextPageToken;
+          }
 
           const newImageCardItems: ImageCardItem[] = data.mediaItems.map(
             (item) => {
-              const imageWidth = Number(item.mediaMetadata.width);
-              const imageHeight = Number(item.mediaMetadata.height);
+              const imageWidth = Number(item.mediaMetadata?.width ?? 200);
+              const imageHeight = Number(item.mediaMetadata?.height ?? 200);
               const isLandscape = imageWidth > imageHeight;
               const width = isLandscape ? 440 : 200;
               const height = (imageHeight / imageWidth) * width;
@@ -91,11 +97,17 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
           );
           this.photos = [...this.photos, ...newImageCardItems];
 
-          this.masonry.reloadItems();
-          this.masonry.layout();
+          this.masonry?.reloadItems();
+          this.masonry?.layout();
         },
         error: this.handleObservableError,
       });
+  }
+
+  ngOnChanges() {
+    this.lastPageToken = '';
+    this.photos = [];
+    this.fetchMediaItemsPageRequests$.next(this.lastPageToken);
   }
 
   ngOnDestroy(): void {
@@ -111,7 +123,13 @@ export class PhotosSectionComponent implements OnChanges, OnDestroy {
   }
 
   handleMorePhotosClick() {
-    this.fetchMediaItemsPageRequests$.next(this.lastPageToken);
+    if (this.hasPhotosToFetch) {
+      this.fetchMediaItemsPageRequests$.next(this.lastPageToken);
+    }
+  }
+
+  itemsLoaded() {
+    console.error('itemsLoaded()');
   }
 
   private handleObservableError(err: HttpErrorResponse) {
