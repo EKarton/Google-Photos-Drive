@@ -19,11 +19,6 @@ export class AlbumsSectionComponent {
 
   albumClick(treeNode: TreeNode) {
     const newPath = `${this.path}/${treeNode.title}`;
-    this.router
-      .navigate(['/content', Base64.encode(newPath)])
-      .then(() => console.log(`Navigated to ${newPath}`))
-      .catch((err) =>
-        console.error(`Failed to navigate to ${newPath}: ${err}`)
-      );
+    this.router.navigate(['/content', Base64.encode(newPath)]);
   }
 }

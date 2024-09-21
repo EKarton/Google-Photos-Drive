@@ -36,7 +36,7 @@ export class MediaItemsRequestService {
     );
   }
 
-  private fetchMediaItemsPage(
+  fetchMediaItemsPage(
     albumId: string | undefined = undefined,
     pageToken: string | undefined = undefined
   ): Observable<MediaItemsPagedResponse> {

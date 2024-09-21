@@ -8,6 +8,8 @@ import { Component, Input } from '@angular/core';
   styleUrl: './photo-card.component.scss',
 })
 export class PhotoCardComponent {
-  @Input() imgSrc!: string;
-  @Input() imgName!: string;
+  @Input({ required: true }) imgSrc!: string;
+  @Input({ required: true }) imgName!: string;
+  @Input({ required: true }) width!: string;
+  @Input({ required: true }) height!: string;
 }

@@ -138,6 +138,15 @@ describe('TreeRepositoryService', () => {
       expect(tree).toBeNull();
     });
 
+    it('should return null, given a title prefix is too long', async () => {
+      const flow = service.getTreeNodeFromTitlePrefix(
+        'Archives/Photos/2009/Cars/Muscle Cars'
+      );
+      const tree = await lastValueFrom(flow);
+
+      expect(tree).toBeNull();
+    });
+
     it('should return the entire tree, given no prefix', async () => {
       const flow = service.getTreeNodeFromTitlePrefix();
       const tree = await lastValueFrom(flow);

@@ -1,18 +1,20 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { NbThemeModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { provideLocationMocks } from '@angular/common/testing';
 import { Component, importProvidersFrom } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Base64 } from 'js-base64';
 import { Album } from '../../../core/albums/Albums';
 import { AlbumsRepositoryService } from '../../../core/albums/AlbumsRepository.service';
-import { MediaItem } from '../../../core/media-items/MediaItems';
-import { MediaItemsRepositoryService } from '../../../core/media-items/MediaItemsRepository.service';
+import { MediaItemsPagedResponse } from '../../../core/media-items/MediaItems';
 import { AuthService } from '../../../core/auth/Auth.service';
 import { ContentPageComponent } from '../content-page.component';
+import { MediaItemsRequestService } from '../../../core/media-items/MediaItemsRequest.service';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-test-empty-component',
@@ -22,8 +24,9 @@ class TestEmptyComponent {}
 
 describe('ContentPageComponent', () => {
   let mockAlbumsRepositoryService: jasmine.SpyObj<AlbumsRepositoryService>;
-  let mockMediaItemsRepositoryService: jasmine.SpyObj<MediaItemsRepositoryService>;
+  let mockMediaItemsRequestService: jasmine.SpyObj<MediaItemsRequestService>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let router: Router;
 
   beforeEach(async () => {
     mockAlbumsRepositoryService = jasmine.createSpyObj(
@@ -33,13 +36,11 @@ describe('ContentPageComponent', () => {
     mockAlbumsRepositoryService.getAllAlbumsStream.and.returnValue(
       of(...mockAlbums)
     );
-    mockMediaItemsRepositoryService = jasmine.createSpyObj(
-      'MediaItemsRepositoryService',
-      ['getMediaItemsStream']
+    mockMediaItemsRequestService = jasmine.createSpyObj(
+      'MediaItemsRequestService',
+      ['fetchMediaItemsPage']
     );
-    mockMediaItemsRepositoryService.getMediaItemsStream.and.returnValue(
-      of(...mockMediaItems)
-    );
+    mockMediaItemsRequestService.fetchMediaItemsPage.and.returnValue(of(page1));
     mockAuthService = jasmine.createSpyObj('AuthService', ['logout']);
     mockAuthService.logout.and.returnValue(of(Object));
 
@@ -64,16 +65,19 @@ describe('ContentPageComponent', () => {
         provideLocationMocks(),
         importProvidersFrom(NbThemeModule.forRoot({ name: 'default' })),
         importProvidersFrom(NbEvaIconsModule),
+        provideAnimations(),
       ],
     });
 
     TestBed.overrideProvider(AlbumsRepositoryService, {
       useValue: mockAlbumsRepositoryService,
     });
-    TestBed.overrideProvider(MediaItemsRepositoryService, {
-      useValue: mockMediaItemsRepositoryService,
+    TestBed.overrideProvider(MediaItemsRequestService, {
+      useValue: mockMediaItemsRequestService,
     });
     TestBed.overrideProvider(AuthService, { useValue: mockAuthService });
+
+    router = TestBed.inject(Router);
   });
 
   it('should render albums and photos', async () => {
@@ -106,7 +110,7 @@ describe('ContentPageComponent', () => {
     // Assert that the photos do exist
     const photoElements =
       fixture.nativeElement.querySelectorAll('.photo-card > img');
-    const photoNames = mockMediaItems.map((m) => m.filename!);
+    const photoNames = page1.mediaItems.map((m) => m.filename!);
     for (const photoName of photoNames) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const foundElement = Array.from(photoElements).filter((e: any) =>
@@ -139,6 +143,45 @@ describe('ContentPageComponent', () => {
     const photoElements =
       fixture.nativeElement.querySelectorAll('.photo-card > img');
     expect(photoElements.length).toEqual(0);
+  });
+
+  it('should take user to 404 page if it cannot parse the pathId', async () => {
+    await TestBed.compileComponents();
+    const harness = await RouterTestingHarness.create();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const events: any[] = [];
+    router.events.subscribe((event) => events.push(event));
+    await harness.navigateByUrl('/content/****', ContentPageComponent);
+    harness.detectChanges();
+
+    expect(events[events.length - 1].url).toEqual('/404');
+  });
+
+  [
+    { errorCode: 401, expectedRedirect: '/auth/login' },
+    { errorCode: 400, expectedRedirect: '/auth/login' },
+    { errorCode: 500, expectedRedirect: '/404' },
+  ].forEach(({ errorCode, expectedRedirect }) => {
+    it(`should take user to ${expectedRedirect} page if it encounters a ${errorCode} error`, async () => {
+      mockAlbumsRepositoryService.getAllAlbumsStream.and.returnValue(
+        throwError(
+          () =>
+            new HttpErrorResponse({ status: errorCode, statusText: 'Error' })
+        )
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const events: any[] = [];
+      router.events.subscribe((event) => events.push(event));
+      await TestBed.compileComponents();
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl(
+        `/content/${encodeURIComponent(Base64.encode('Home/Archives'))}`,
+        ContentPageComponent
+      );
+      harness.detectChanges();
+
+      expect(events[events.length - 1].url).toEqual(expectedRedirect);
+    });
   });
 });
 
@@ -180,29 +223,23 @@ const mockAlbums: Album[] = [
   },
 ];
 
-const mockMediaItems: MediaItem[] = [
-  {
-    id: 'photos1',
-    productUrl: 'https://photos.google.com/photos/photos1',
-    baseUrl: 'https://photos.google.com/thumbnails/photos1',
-    filename: 'Photo 1',
-  },
-  {
-    id: 'photos2',
-    productUrl: 'https://photos.google.com/photos/photos2',
-    baseUrl: 'https://photos.google.com/thumbnails/photos2',
-    filename: 'Photo 2',
-  },
-  {
-    id: 'photos3',
-    productUrl: 'https://photos.google.com/photos/photos3',
-    baseUrl: 'https://photos.google.com/thumbnails/photos3',
-    filename: 'Photo 3',
-  },
-  {
-    id: 'photos4',
-    productUrl: 'https://photos.google.com/photos/photos4',
-    baseUrl: 'https://photos.google.com/thumbnails/photos4',
-    filename: 'Photo 4',
-  },
-];
+const page1: MediaItemsPagedResponse = {
+  mediaItems: [
+    {
+      id: 'photo1',
+      productUrl: 'https://photos.google.com/photos/photo1',
+      baseUrl: 'https://photos.google.com/thumbnails/photo1',
+    },
+    {
+      id: 'photo2',
+      productUrl: 'https://photos.google.com/photos/photo2',
+      baseUrl: 'https://photos.google.com/thumbnails/photo2',
+    },
+    {
+      id: 'photo3',
+      productUrl: 'https://photos.google.com/photos/photo3',
+      baseUrl: 'https://photos.google.com/thumbnails/photo3',
+    },
+  ],
+  nextPageToken: 'page2',
+};

@@ -29,17 +29,15 @@ export class TreeRepositoryService {
           node: TreeNode,
           curTitleIdx: number
         ): TreeNode | null {
-          if (curTitleIdx >= titlesToSearchFor.length) {
-            return null;
-          }
-
           const firstTitle = titlesToSearchFor[curTitleIdx];
           if (node.title !== firstTitle) {
             return null;
           }
 
           if (curTitleIdx === titlesToSearchFor.length - 1) {
-            return node.title === firstTitle ? node : null;
+            if (node.title === firstTitle) {
+              return node;
+            }
           }
 
           for (const childNode of node.childNodes) {
