@@ -42,7 +42,6 @@ export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
 
   photos: ImageCardItem[] = [];
   readonly masonryOptions: NgxMasonryOptions = {
-    itemSelector: '.photo-section__image-card',
     gutter: 40,
     fitWidth: true,
     columnWidth: 200,

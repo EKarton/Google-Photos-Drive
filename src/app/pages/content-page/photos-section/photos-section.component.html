@@ -9,7 +9,6 @@
     @for (photo of photos; track photo.mediaItem.id) {
     <app-photo-card
       ngxMasonryItem
-      class="photo-section__image-card"
       [imgSrc]="photo.mediaItem.baseUrl"
       [imgName]="photo.mediaItem.filename ?? ''"
       [width]="photo.width"
