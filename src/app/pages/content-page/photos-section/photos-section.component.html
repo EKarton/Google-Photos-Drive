@@ -1,5 +1,17 @@
 <div>
-  <h5 class="photos-section__header">Photos</h5>
+  <div class="photos-section__header">
+    <h5 class="photos-section__header-text">Photos</h5>
+
+    @if (gAlbumLink) {
+    <button
+      nbButton
+      class="photos-section__header-link"
+      (click)="handleAlbumClick()"
+    >
+      Go to Album
+    </button>
+    }
+  </div>
 
   <ngx-masonry
     class="photos-section__cards-list"

@@ -1,6 +1,13 @@
 .photos-section {
   &__header {
-    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2.5rem;
+  }
+
+  &__header-text {
+    margin: 0;
   }
 
   &__cards-list {

@@ -153,6 +153,23 @@ describe('PhotosSectionComponent', () => {
     );
   });
 
+  it('should navigate to url when user clicks on album link', async () => {
+    const fixture = TestBed.createComponent(PhotosSectionComponent);
+    const component = fixture.componentInstance;
+    component.gAlbumId = 'albumId1';
+    component.gAlbumLink = 'https://photos.google.com/albums/album1';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    fixture.nativeElement.querySelector('.photos-section__header-link').click();
+
+    expect(mockWindow.open).toHaveBeenCalledWith(
+      'https://photos.google.com/albums/album1',
+      '_blank',
+      'noopener,noreferrer'
+    );
+  });
+
   [
     { errorCode: 401, expectedRedirect: '/auth/login' },
     { errorCode: 400, expectedRedirect: '/auth/login' },

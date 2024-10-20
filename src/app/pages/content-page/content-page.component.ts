@@ -70,6 +70,8 @@ export class ContentPageComponent implements OnInit {
             this.treeNode = treeNode;
           },
           error: (err: HttpErrorResponse) => {
+            console.error(err);
+
             if (err.status === 401 || err.status === 400) {
               this.router.navigate(['/auth/login']);
             } else {

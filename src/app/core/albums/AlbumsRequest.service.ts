@@ -67,7 +67,12 @@ export class AlbumsRequestService {
 
         return this.fetchAlbumsPage(response.nextPageToken);
       }),
-      scan((acc: Album[], current) => acc.concat(current.albums!), [])
+      scan((acc: Album[], current) => {
+        if (current.albums) {
+          return acc.concat(current.albums);
+        }
+        return acc;
+      }, [])
     );
   }
 

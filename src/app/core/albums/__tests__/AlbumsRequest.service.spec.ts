@@ -47,6 +47,7 @@ describe('AlbumsRequestService', () => {
         next: (val: Album[]) => emittedValues.push(val),
         error: done.fail,
         complete: () => {
+          expect(emittedValues.length).toEqual(2);
           expect(emittedValues[0]).toEqual(sharedAlbumsPage1.sharedAlbums!);
           expect(emittedValues[1]).toEqual([
             ...sharedAlbumsPage1.sharedAlbums!,
@@ -84,6 +85,7 @@ describe('AlbumsRequestService', () => {
         next: (val: Album[]) => emittedValues.push(val),
         error: done.fail,
         complete: () => {
+          expect(emittedValues.length).toEqual(2);
           expect(emittedValues[0]).toEqual(albumsPage1.albums!);
           expect(emittedValues[1]).toEqual([
             ...albumsPage1.albums!,
@@ -109,6 +111,37 @@ describe('AlbumsRequestService', () => {
             req.params.get('pageToken') === albumsPage1.nextPageToken
         )
         .flush(albumsPage2, { status: 200, statusText: 'OK' });
+    });
+
+    it('should return a list of albums given last page has no albums', (done) => {
+      const emittedValues: Album[][] = [];
+      service.fetchAlbums().subscribe({
+        next: (val: Album[]) => emittedValues.push(val),
+        error: done.fail,
+        complete: () => {
+          expect(emittedValues.length).toEqual(2);
+          expect(emittedValues[0]).toEqual(albumsPage1.albums!);
+          expect(emittedValues[1]).toEqual(albumsPage1.albums!);
+          done();
+        },
+      });
+
+      httpMock
+        .expectOne(
+          (req) =>
+            req.url === 'https://photoslibrary.googleapis.com/v1/albums' &&
+            req.headers.get('Authorization') === 'Bearer accessToken123' &&
+            !req.params.get('pageToken')
+        )
+        .flush(albumsPage1, { status: 200, statusText: 'OK' });
+      httpMock
+        .expectOne(
+          (req) =>
+            req.url === 'https://photoslibrary.googleapis.com/v1/albums' &&
+            req.headers.get('Authorization') === 'Bearer accessToken123' &&
+            req.params.get('pageToken') === albumsPage1.nextPageToken
+        )
+        .flush({}, { status: 200, statusText: 'OK' });
     });
   });
 });

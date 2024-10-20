@@ -45,6 +45,8 @@ export class SearchBarComponent implements OnInit {
         this.options = [...this.options, new SearchItem(album)];
       },
       error: (err: HttpErrorResponse) => {
+        console.error(err);
+
         if (err.status === 401 || err.status === 400) {
           this.router.navigateByUrl('/auth/login');
         } else {
