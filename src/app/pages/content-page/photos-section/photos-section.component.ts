@@ -38,9 +38,11 @@ import { MediaItemsRequestService } from '../../../core/media-items/MediaItemsRe
 })
 export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
   @Input({ required: true }) gAlbumId?: string;
+  @Input({ required: true }) gAlbumLink?: string;
   @ViewChild(NgxMasonryComponent) masonry?: NgxMasonryComponent;
 
   photos: ImageCardItem[] = [];
+
   readonly masonryOptions: NgxMasonryOptions = {
     gutter: 40,
     fitWidth: true,
@@ -100,6 +102,8 @@ export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
           this.masonry?.layout();
         },
         error: (err: HttpErrorResponse) => {
+          console.error(err);
+
           if (err.status === 401 || err.status === 400) {
             this.router.navigateByUrl('/auth/login');
           } else {
@@ -125,6 +129,10 @@ export class PhotosSectionComponent implements OnInit, OnChanges, OnDestroy {
       '_blank',
       'noopener,noreferrer'
     );
+  }
+
+  handleAlbumClick() {
+    this.window.open(this.gAlbumLink, '_blank', 'noopener,noreferrer');
   }
 
   handleMorePhotosClick() {

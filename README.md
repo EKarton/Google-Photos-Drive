@@ -61,6 +61,12 @@ Refer to this doc for a detailed walkthrough. However, here are a few screenshot
 
     Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io) with code coverage and without a browser.
 
+    To run only one test, use the `--src` flag. For instance, to run the `photos-section.component.spec.ts` test, run the following command:
+
+    ```bash
+    ng test --watch=false --no-progress --browsers=ChromeHeadless --code-coverage --src=src/app/pages/content-page/photos-section/__tests__/photos-section.component.spec.ts
+    ```
+
 ## Usage
 
 Please note that this project is used for educational purposes and is not intended to be used commercially. We are not liable for any damages/changes/lost data done by this project.

@@ -8,7 +8,10 @@
     } @if (treeNode && treeNode.childNodes.length > 0) {
     <app-albums-section [albums]="treeNode.childNodes" [path]="path" />
     } @if (treeNode && treeNode.isAlbum) {
-    <app-photos-section [gAlbumId]="treeNode.albumId" />
+    <app-photos-section
+      [gAlbumId]="treeNode.albumId"
+      [gAlbumLink]="treeNode.albumGooglePhotosLink"
+    />
     }
   </nb-layout-column>
 </nb-layout>
