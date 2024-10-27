@@ -1,7 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NbLayoutModule } from '@nebular/theme';
 import { ComponentsModule } from '../../../components/components.module';
 import { DarkModeButtonComponent } from './dark-mode-button/dark-mode-button.component';
 import { LogoutButtonComponent } from './logout-button/logout-button.component';
