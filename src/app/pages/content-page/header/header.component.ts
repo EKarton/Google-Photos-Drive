@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NbLayoutModule } from '@nebular/theme';
 import { ComponentsModule } from '../../../components/components.module';
 import { DarkModeButtonComponent } from './dark-mode-button/dark-mode-button.component';
@@ -11,8 +12,8 @@ import { LogoComponent } from './logo/logo.component';
   selector: 'app-header',
   standalone: true,
   imports: [
-    NbLayoutModule,
     AsyncPipe,
+    MatProgressBarModule,
     ComponentsModule,
     LogoComponent,
     SearchBarComponent,
@@ -22,4 +23,6 @@ import { LogoComponent } from './logo/logo.component';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  @Input({ required: true }) isLoading!: boolean;
+}

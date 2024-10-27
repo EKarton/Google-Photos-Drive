@@ -14,11 +14,16 @@ import { HeaderComponent } from './header/header.component';
 import { PathBreadcrumbsComponent } from './path-breadcrumbs/path-breadcrumbs.component';
 import { PhotosSectionComponent } from './photos-section/photos-section.component';
 import { AlbumsSectionComponent } from './albums-section/albums-section.component';
+import { BehaviorSubject } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-content-page',
   standalone: true,
   imports: [
+    AsyncPipe,
+    MatProgressBarModule,
     NbLayoutModule,
     HeaderComponent,
     PathBreadcrumbsComponent,
@@ -41,6 +46,7 @@ import { AlbumsSectionComponent } from './albums-section/albums-section.componen
   ],
 })
 export class ContentPageComponent implements OnInit {
+  readonly isLoading$ = new BehaviorSubject(true);
   treeNode: TreeNode | null = null;
   path = '';
 
@@ -62,12 +68,16 @@ export class ContentPageComponent implements OnInit {
 
       this.treeNode = null;
       this.path = parsedPath;
+      this.isLoading$.next(true);
 
       this.treeRepositoryService
         .getTreeNodeFromTitlePrefix(this.path)
         .subscribe({
           next: (treeNode) => {
             this.treeNode = treeNode;
+          },
+          complete: () => {
+            this.isLoading$.next(false);
           },
           error: (err: HttpErrorResponse) => {
             console.error(err);

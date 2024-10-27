@@ -1,7 +1,9 @@
 .content-page-header {
   display: flex;
   align-items: center;
-  
+  height: 4.5rem;
+  padding: 1.25rem;
+
   &__logo {
     flex-grow: 0;
   }
