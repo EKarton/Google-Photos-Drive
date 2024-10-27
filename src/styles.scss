@@ -23,5 +23,5 @@ html {
   height: 100%;
 }
 
-@include mat.core();
+@include mat.core;
 @include mat.color-variants-backwards-compatibility($theme);
