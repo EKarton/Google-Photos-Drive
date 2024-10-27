@@ -1,6 +1,13 @@
 .content-page {
   &__header {
+    position: fixed;
+    height: calc(4.5rem + 4px);
     width: 100%;
+    left: 0;
+  }
+
+  &__contents {
+    padding-top: calc(4.5rem + 4px);
   }
 
   &__breadcrumbs {

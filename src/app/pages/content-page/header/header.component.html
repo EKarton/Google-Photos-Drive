@@ -1,12 +1,17 @@
-<div class="content-page-header">
-  <span class="content-page-header__logo">
-    <app-logo />
-  </span>
-  <span class="content-page-header__search-bar">
-    <app-search-bar />
-  </span>
-  <span class="content-page-header__settings">
-    <app-dark-mode-button />
-    <app-logout-button />
-  </span>
+<div>
+  <div class="content-page-header">
+    <span class="content-page-header__logo">
+      <app-logo />
+    </span>
+    <span class="content-page-header__search-bar">
+      <app-search-bar />
+    </span>
+    <span class="content-page-header__settings">
+      <app-dark-mode-button />
+      <app-logout-button />
+    </span>
+  </div>
+  @if (isLoading) {
+  <mat-progress-bar mode="query"></mat-progress-bar>
+  }
 </div>
